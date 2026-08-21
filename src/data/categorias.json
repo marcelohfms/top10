@@ -1,0 +1,563 @@
+[
+  {
+    "id": "elementos-atmosfera",
+    "titulo": "Elementos mais abundantes na atmosfera terrestre",
+    "fonte": "NOAA, 2023",
+    "itens": [
+      { "nome": "Nitrogênio", "apelidos": ["n2", "azoto"] },
+      { "nome": "Oxigênio", "apelidos": ["o2"] },
+      { "nome": "Argônio", "apelidos": ["argon", "ar"] },
+      { "nome": "Dióxido de carbono", "apelidos": ["co2", "gas carbonico"] },
+      { "nome": "Neônio", "apelidos": ["ne"] },
+      { "nome": "Hélio", "apelidos": ["he"] },
+      { "nome": "Metano", "apelidos": ["ch4"] },
+      { "nome": "Criptônio", "apelidos": ["kr"] },
+      { "nome": "Hidrogênio", "apelidos": ["h2"] },
+      { "nome": "Óxido nitroso", "apelidos": ["n2o", "gas hilariante"] }
+    ]
+  },
+  {
+    "id": "paises-mais-populosos",
+    "titulo": "Países mais populosos do mundo",
+    "fonte": "ONU, 2024",
+    "itens": [
+      { "nome": "Índia", "apelidos": [] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa", "estados unidos da america"] },
+      { "nome": "Indonésia", "apelidos": [] },
+      { "nome": "Paquistão", "apelidos": [] },
+      { "nome": "Nigéria", "apelidos": [] },
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Bangladesh", "apelidos": [] },
+      { "nome": "Rússia", "apelidos": ["russia", "federacao russa"] },
+      { "nome": "Etiópia", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "maiores-paises-area",
+    "titulo": "Maiores países do mundo por área territorial",
+    "fonte": "ONU / Britannica, 2023",
+    "itens": [
+      { "nome": "Rússia", "apelidos": ["russia", "federacao russa"] },
+      { "nome": "Canadá", "apelidos": ["canada"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Austrália", "apelidos": ["australia"] },
+      { "nome": "Índia", "apelidos": [] },
+      { "nome": "Argentina", "apelidos": [] },
+      { "nome": "Cazaquistão", "apelidos": ["cazaquistao"] },
+      { "nome": "Argélia", "apelidos": ["argelia"] }
+    ]
+  },
+  {
+    "id": "rios-mais-longos",
+    "titulo": "Rios mais longos do mundo",
+    "fonte": "Britannica, 2023",
+    "itens": [
+      { "nome": "Nilo", "apelidos": [] },
+      { "nome": "Amazonas", "apelidos": ["rio amazonas"] },
+      { "nome": "Yangtzé", "apelidos": ["yangtze", "chang jiang"] },
+      { "nome": "Mississippi", "apelidos": ["missouri", "mississippi missouri"] },
+      { "nome": "Ienissei", "apelidos": ["yenisei", "angara"] },
+      { "nome": "Rio Amarelo", "apelidos": ["huang he"] },
+      { "nome": "Óbi", "apelidos": ["obi", "irtish", "irtysh"] },
+      { "nome": "Paraná", "apelidos": ["rio da prata", "parana"] },
+      { "nome": "Congo", "apelidos": ["rio congo", "zaire"] },
+      { "nome": "Amur", "apelidos": ["heilongjiang"] }
+    ]
+  },
+  {
+    "id": "montanhas-mais-altas",
+    "titulo": "Montanhas mais altas do mundo",
+    "fonte": "Britannica, 2023",
+    "itens": [
+      { "nome": "Everest", "apelidos": ["monte everest", "chomolungma"] },
+      { "nome": "K2", "apelidos": ["monte godwin austen"] },
+      { "nome": "Kanchenjunga", "apelidos": ["kangchenjunga"] },
+      { "nome": "Lhotse", "apelidos": [] },
+      { "nome": "Makalu", "apelidos": [] },
+      { "nome": "Cho Oyu", "apelidos": [] },
+      { "nome": "Dhaulagiri", "apelidos": [] },
+      { "nome": "Manaslu", "apelidos": [] },
+      { "nome": "Nanga Parbat", "apelidos": [] },
+      { "nome": "Annapurna", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "maiores-ilhas",
+    "titulo": "Maiores ilhas do mundo",
+    "fonte": "Britannica, 2023",
+    "itens": [
+      { "nome": "Groenlândia", "apelidos": ["groenlandia", "greenland"] },
+      { "nome": "Nova Guiné", "apelidos": ["nova guine", "papua nova guine"] },
+      { "nome": "Bornéu", "apelidos": ["borneo"] },
+      { "nome": "Madagascar", "apelidos": [] },
+      { "nome": "Ilha de Baffin", "apelidos": ["baffin"] },
+      { "nome": "Sumatra", "apelidos": [] },
+      { "nome": "Honshu", "apelidos": ["honxu"] },
+      { "nome": "Grã-Bretanha", "apelidos": ["gra bretanha"] },
+      { "nome": "Ilha Vitória", "apelidos": ["victoria island"] },
+      { "nome": "Ilha Ellesmere", "apelidos": ["ellesmere"] }
+    ]
+  },
+  {
+    "id": "maiores-lagos",
+    "titulo": "Maiores lagos do mundo por área",
+    "fonte": "Britannica, 2023",
+    "itens": [
+      { "nome": "Mar Cáspio", "apelidos": ["mar caspio", "caspio"] },
+      { "nome": "Lago Superior", "apelidos": ["lake superior"] },
+      { "nome": "Lago Vitória", "apelidos": ["lago victoria"] },
+      { "nome": "Lago Hurón", "apelidos": ["lago huron"] },
+      { "nome": "Lago Michigan", "apelidos": [] },
+      { "nome": "Lago Tanganica", "apelidos": ["tanganyika"] },
+      { "nome": "Lago Baikal", "apelidos": ["baikal"] },
+      { "nome": "Grande Lago do Urso", "apelidos": ["great bear lake"] },
+      { "nome": "Lago Malawi", "apelidos": ["lago niassa", "niassa"] },
+      { "nome": "Grande Lago dos Escravos", "apelidos": ["great slave lake"] }
+    ]
+  },
+  {
+    "id": "maiores-paises-africa",
+    "titulo": "Maiores países da África por área territorial",
+    "fonte": "Britannica, 2023",
+    "itens": [
+      { "nome": "Argélia", "apelidos": ["argelia"] },
+      { "nome": "República Democrática do Congo", "apelidos": ["rdc", "congo rdc"] },
+      { "nome": "Sudão", "apelidos": ["sudao"] },
+      { "nome": "Líbia", "apelidos": ["libia"] },
+      { "nome": "Chade", "apelidos": [] },
+      { "nome": "Níger", "apelidos": ["niger"] },
+      { "nome": "Angola", "apelidos": [] },
+      { "nome": "Mali", "apelidos": [] },
+      { "nome": "África do Sul", "apelidos": ["africa do sul", "rsa"] },
+      { "nome": "Etiópia", "apelidos": ["etiopia"] }
+    ]
+  },
+  {
+    "id": "linguas-mais-faladas",
+    "titulo": "Línguas mais faladas do mundo (falantes nativos e não nativos)",
+    "fonte": "Ethnologue, 2023",
+    "itens": [
+      { "nome": "Inglês", "apelidos": ["ingles", "english"] },
+      { "nome": "Mandarim", "apelidos": ["chines mandarim"] },
+      { "nome": "Hindi", "apelidos": [] },
+      { "nome": "Espanhol", "apelidos": ["castelhano"] },
+      { "nome": "Francês", "apelidos": ["frances"] },
+      { "nome": "Árabe", "apelidos": ["arabe"] },
+      { "nome": "Bengali", "apelidos": ["bangla"] },
+      { "nome": "Português", "apelidos": ["portugues"] },
+      { "nome": "Russo", "apelidos": [] },
+      { "nome": "Urdu", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "maiores-desertos",
+    "titulo": "Maiores desertos do mundo por área (incluindo desertos polares)",
+    "fonte": "National Geographic, 2023",
+    "itens": [
+      { "nome": "Deserto Antártico", "apelidos": ["antartida", "antartico"] },
+      { "nome": "Deserto Ártico", "apelidos": ["deserto do artico"] },
+      { "nome": "Saara", "apelidos": ["sahara"] },
+      { "nome": "Rub al-Khali", "apelidos": ["deserto da arabia", "empty quarter"] },
+      { "nome": "Deserto de Gobi", "apelidos": ["gobi"] },
+      { "nome": "Kalahari", "apelidos": [] },
+      { "nome": "Patagônia", "apelidos": ["deserto da patagonia"] },
+      { "nome": "Grande Deserto Vitória", "apelidos": ["great victoria desert"] },
+      { "nome": "Deserto da Síria", "apelidos": ["deserto sirio"] },
+      { "nome": "Grande Deserto de Areia", "apelidos": ["great sandy desert"] }
+    ]
+  },
+  {
+    "id": "paises-mais-visitados",
+    "titulo": "Países mais visitados por turistas internacionais",
+    "fonte": "OMT/UNWTO, 2023",
+    "itens": [
+      { "nome": "França", "apelidos": ["franca"] },
+      { "nome": "Espanha", "apelidos": [] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Itália", "apelidos": ["italia"] },
+      { "nome": "Turquia", "apelidos": [] },
+      { "nome": "México", "apelidos": ["mexico"] },
+      { "nome": "Tailândia", "apelidos": ["tailandia"] },
+      { "nome": "Alemanha", "apelidos": [] },
+      { "nome": "Reino Unido", "apelidos": ["uk", "gra-bretanha"] }
+    ]
+  },
+  {
+    "id": "elementos-abundantes-crosta",
+    "titulo": "Elementos mais abundantes na crosta terrestre",
+    "fonte": "USGS, 2022",
+    "itens": [
+      { "nome": "Oxigênio", "apelidos": ["o2"] },
+      { "nome": "Silício", "apelidos": ["si"] },
+      { "nome": "Alumínio", "apelidos": ["al"] },
+      { "nome": "Ferro", "apelidos": ["fe"] },
+      { "nome": "Cálcio", "apelidos": ["ca"] },
+      { "nome": "Sódio", "apelidos": ["na"] },
+      { "nome": "Potássio", "apelidos": ["k"] },
+      { "nome": "Magnésio", "apelidos": ["mg"] },
+      { "nome": "Titânio", "apelidos": ["ti"] },
+      { "nome": "Hidrogênio", "apelidos": ["h2"] }
+    ]
+  },
+  {
+    "id": "elementos-abundantes-universo",
+    "titulo": "Elementos mais abundantes no universo",
+    "fonte": "NASA, 2022",
+    "itens": [
+      { "nome": "Hidrogênio", "apelidos": ["h2"] },
+      { "nome": "Hélio", "apelidos": ["he"] },
+      { "nome": "Oxigênio", "apelidos": ["o2"] },
+      { "nome": "Carbono", "apelidos": ["c"] },
+      { "nome": "Neônio", "apelidos": ["ne"] },
+      { "nome": "Ferro", "apelidos": ["fe"] },
+      { "nome": "Nitrogênio", "apelidos": ["n2"] },
+      { "nome": "Silício", "apelidos": ["si"] },
+      { "nome": "Magnésio", "apelidos": ["mg"] },
+      { "nome": "Enxofre", "apelidos": ["s"] }
+    ]
+  },
+  {
+    "id": "escala-mohs",
+    "titulo": "Escala de dureza de Mohs, do mineral mais mole ao mais duro",
+    "fonte": "USGS, 2022",
+    "itens": [
+      { "nome": "Talco", "apelidos": [] },
+      { "nome": "Gipsita", "apelidos": ["gesso"] },
+      { "nome": "Calcita", "apelidos": [] },
+      { "nome": "Fluorita", "apelidos": ["fluorspar"] },
+      { "nome": "Apatita", "apelidos": [] },
+      { "nome": "Ortoclásio", "apelidos": ["feldspato"] },
+      { "nome": "Quartzo", "apelidos": [] },
+      { "nome": "Topázio", "apelidos": [] },
+      { "nome": "Coríndon", "apelidos": ["safira", "rubi"] },
+      { "nome": "Diamante", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "maiores-luas",
+    "titulo": "Maiores luas do sistema solar",
+    "fonte": "NASA, 2023",
+    "itens": [
+      { "nome": "Ganimedes", "apelidos": [] },
+      { "nome": "Titã", "apelidos": ["titan"] },
+      { "nome": "Calisto", "apelidos": [] },
+      { "nome": "Io", "apelidos": [] },
+      { "nome": "Lua", "apelidos": ["moon"] },
+      { "nome": "Europa", "apelidos": [] },
+      { "nome": "Tritão", "apelidos": ["triton"] },
+      { "nome": "Titânia", "apelidos": ["titania"] },
+      { "nome": "Reia", "apelidos": ["rhea"] },
+      { "nome": "Oberon", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "planetas-por-diametro",
+    "titulo": "Maiores planetas e planetas anões do sistema solar por diâmetro",
+    "fonte": "NASA, 2023",
+    "itens": [
+      { "nome": "Júpiter", "apelidos": ["jupiter"] },
+      { "nome": "Saturno", "apelidos": [] },
+      { "nome": "Urano", "apelidos": ["uranus"] },
+      { "nome": "Netuno", "apelidos": ["neptuno"] },
+      { "nome": "Terra", "apelidos": ["planeta terra"] },
+      { "nome": "Vênus", "apelidos": ["venus"] },
+      { "nome": "Marte", "apelidos": ["mars"] },
+      { "nome": "Mercúrio", "apelidos": ["mercurio"] },
+      { "nome": "Plutão", "apelidos": ["plutao", "pluto"] },
+      { "nome": "Éris", "apelidos": ["eris"] }
+    ]
+  },
+  {
+    "id": "primeiros-elementos-tabela-periodica",
+    "titulo": "Primeiros 10 elementos da tabela periódica por número atômico",
+    "fonte": "IUPAC, 2023",
+    "itens": [
+      { "nome": "Hidrogênio", "apelidos": ["h2"] },
+      { "nome": "Hélio", "apelidos": ["he"] },
+      { "nome": "Lítio", "apelidos": ["li"] },
+      { "nome": "Berílio", "apelidos": ["be"] },
+      { "nome": "Boro", "apelidos": ["b"] },
+      { "nome": "Carbono", "apelidos": ["c"] },
+      { "nome": "Nitrogênio", "apelidos": ["n2"] },
+      { "nome": "Oxigênio", "apelidos": ["o2"] },
+      { "nome": "Flúor", "apelidos": ["fluor"] },
+      { "nome": "Neônio", "apelidos": ["ne"] }
+    ]
+  },
+  {
+    "id": "filmes-maior-bilheteria",
+    "titulo": "Filmes de maior bilheteria mundial da história do cinema",
+    "fonte": "Box Office Mojo, 2024",
+    "itens": [
+      { "nome": "Avatar", "apelidos": [] },
+      { "nome": "Vingadores: Ultimato", "apelidos": ["avengers endgame"] },
+      { "nome": "Avatar: O Caminho da Água", "apelidos": ["avatar 2", "caminho da agua"] },
+      { "nome": "Titanic", "apelidos": [] },
+      { "nome": "Star Wars: O Despertar da Força", "apelidos": ["despertar da forca"] },
+      { "nome": "Vingadores: Guerra Infinita", "apelidos": ["avengers infinity war"] },
+      { "nome": "Homem-Aranha: Sem Volta Para Casa", "apelidos": ["spider-man no way home"] },
+      { "nome": "Jurassic World", "apelidos": ["mundo jurassico"] },
+      { "nome": "Vingadores: Era de Ultron", "apelidos": ["avengers age of ultron"] },
+      { "nome": "O Rei Leão", "apelidos": ["rei leao 2019", "lion king"] }
+    ]
+  },
+  {
+    "id": "artistas-mais-discos-vendidos",
+    "titulo": "Artistas musicais com mais discos vendidos da história",
+    "fonte": "RIAA/indústria fonográfica, estimativas compiladas, 2023",
+    "itens": [
+      { "nome": "The Beatles", "apelidos": ["beatles"] },
+      { "nome": "Elvis Presley", "apelidos": ["elvis", "rei do rock"] },
+      { "nome": "Michael Jackson", "apelidos": ["rei do pop"] },
+      { "nome": "Madonna", "apelidos": [] },
+      { "nome": "Elton John", "apelidos": [] },
+      { "nome": "Led Zeppelin", "apelidos": [] },
+      { "nome": "Rihanna", "apelidos": [] },
+      { "nome": "Pink Floyd", "apelidos": [] },
+      { "nome": "Mariah Carey", "apelidos": [] },
+      { "nome": "The Rolling Stones", "apelidos": ["rolling stones"] }
+    ]
+  },
+  {
+    "id": "religioes-mais-adeptos",
+    "titulo": "Religiões com mais adeptos no mundo",
+    "fonte": "Pew Research Center, 2023",
+    "itens": [
+      { "nome": "Cristianismo", "apelidos": ["cristaos"] },
+      { "nome": "Islamismo", "apelidos": ["muculmanos", "islam"] },
+      { "nome": "Sem religião", "apelidos": ["ateus", "agnosticos", "irreligiosos"] },
+      { "nome": "Hinduísmo", "apelidos": ["hinduismo", "hindus"] },
+      { "nome": "Budismo", "apelidos": ["budistas"] },
+      { "nome": "Religiões populares chinesas", "apelidos": ["religiao tradicional chinesa"] },
+      { "nome": "Religiões tradicionais africanas", "apelidos": ["religioes etnicas africanas"] },
+      { "nome": "Sikhismo", "apelidos": ["sique", "sikh"] },
+      { "nome": "Espiritismo e religiões afro-brasileiras", "apelidos": ["candomble", "umbanda"] },
+      { "nome": "Judaísmo", "apelidos": ["judeus"] }
+    ]
+  },
+  {
+    "id": "paises-mais-ouros-olimpicos",
+    "titulo": "Países com mais medalhas de ouro na história dos Jogos Olímpicos de Verão",
+    "fonte": "COI/Comitê Olímpico Internacional, quadro histórico, 2023",
+    "itens": [
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "União Soviética", "apelidos": ["urss"] },
+      { "nome": "Grã-Bretanha", "apelidos": ["reino unido"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "França", "apelidos": ["franca"] },
+      { "nome": "Itália", "apelidos": ["italia"] },
+      { "nome": "Alemanha", "apelidos": [] },
+      { "nome": "Hungria", "apelidos": [] },
+      { "nome": "Austrália", "apelidos": ["australia"] },
+      { "nome": "Suécia", "apelidos": ["suecia"] }
+    ]
+  },
+  {
+    "id": "imperios-maior-extensao",
+    "titulo": "Impérios de maior extensão territorial da história",
+    "fonte": "compilação histórica geral, 2023",
+    "itens": [
+      { "nome": "Império Britânico", "apelidos": ["imperio britanico"] },
+      { "nome": "Império Mongol", "apelidos": ["imperio mongol", "mongois"] },
+      { "nome": "Império Russo", "apelidos": ["imperio russo"] },
+      { "nome": "Dinastia Qing", "apelidos": ["qing"] },
+      { "nome": "Império Espanhol", "apelidos": ["imperio espanhol"] },
+      { "nome": "Segundo Império Colonial Francês", "apelidos": ["imperio colonial frances"] },
+      { "nome": "Califado Abássida", "apelidos": ["abassidas"] },
+      { "nome": "Dinastia Yuan", "apelidos": ["yuan"] },
+      { "nome": "Califado Omíada", "apelidos": ["omiadas", "califado omiada"] },
+      { "nome": "Império Português", "apelidos": ["imperio portugues"] }
+    ]
+  },
+  {
+    "id": "paises-mais-premios-nobel",
+    "titulo": "Países com mais laureados com o Prêmio Nobel (total histórico, todas as categorias)",
+    "fonte": "Fundação Nobel, compilação histórica, 2023",
+    "itens": [
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "Reino Unido", "apelidos": ["gra-bretanha"] },
+      { "nome": "Alemanha", "apelidos": [] },
+      { "nome": "França", "apelidos": ["franca"] },
+      { "nome": "Suécia", "apelidos": ["suecia"] },
+      { "nome": "Rússia", "apelidos": ["uniao sovietica"] },
+      { "nome": "Japão", "apelidos": ["japao"] },
+      { "nome": "Canadá", "apelidos": ["canada"] },
+      { "nome": "Suíça", "apelidos": ["suica"] },
+      { "nome": "Itália", "apelidos": ["italia"] }
+    ]
+  },
+  {
+    "id": "paises-produtores-cafe",
+    "titulo": "Maiores países produtores de café",
+    "fonte": "USDA, 2023",
+    "itens": [
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Vietnã", "apelidos": ["vietna"] },
+      { "nome": "Colômbia", "apelidos": ["colombia"] },
+      { "nome": "Indonésia", "apelidos": ["indonesia"] },
+      { "nome": "Etiópia", "apelidos": ["etiopia"] },
+      { "nome": "Honduras", "apelidos": [] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "Uganda", "apelidos": [] },
+      { "nome": "México", "apelidos": ["mexico"] },
+      { "nome": "Guatemala", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-produtores-cacau",
+    "titulo": "Maiores países produtores de cacau",
+    "fonte": "FAO, 2023",
+    "itens": [
+      { "nome": "Costa do Marfim", "apelidos": [] },
+      { "nome": "Gana", "apelidos": [] },
+      { "nome": "Indonésia", "apelidos": ["indonesia"] },
+      { "nome": "Equador", "apelidos": [] },
+      { "nome": "Camarões", "apelidos": ["camaroes"] },
+      { "nome": "Nigéria", "apelidos": ["nigeria"] },
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Peru", "apelidos": [] },
+      { "nome": "República Dominicana", "apelidos": ["rep dominicana"] },
+      { "nome": "Colômbia", "apelidos": ["colombia"] }
+    ]
+  },
+  {
+    "id": "paises-produtores-vinho",
+    "titulo": "Maiores países produtores de vinho por volume",
+    "fonte": "OIV, 2023",
+    "itens": [
+      { "nome": "Itália", "apelidos": ["italia"] },
+      { "nome": "França", "apelidos": ["franca"] },
+      { "nome": "Espanha", "apelidos": [] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "Austrália", "apelidos": ["australia"] },
+      { "nome": "Chile", "apelidos": [] },
+      { "nome": "Argentina", "apelidos": [] },
+      { "nome": "África do Sul", "apelidos": ["africa do sul"] },
+      { "nome": "Alemanha", "apelidos": [] },
+      { "nome": "Portugal", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-produtores-arroz",
+    "titulo": "Maiores países produtores de arroz",
+    "fonte": "FAO, 2023",
+    "itens": [
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "Indonésia", "apelidos": ["indonesia"] },
+      { "nome": "Bangladesh", "apelidos": [] },
+      { "nome": "Vietnã", "apelidos": ["vietna"] },
+      { "nome": "Tailândia", "apelidos": ["tailandia"] },
+      { "nome": "Myanmar", "apelidos": ["birmania"] },
+      { "nome": "Filipinas", "apelidos": [] },
+      { "nome": "Paquistão", "apelidos": ["paquistao"] },
+      { "nome": "Brasil", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-produtores-soja",
+    "titulo": "Maiores países produtores de soja",
+    "fonte": "USDA, 2023",
+    "itens": [
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "Argentina", "apelidos": [] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "Paraguai", "apelidos": [] },
+      { "nome": "Canadá", "apelidos": ["canada"] },
+      { "nome": "Rússia", "apelidos": ["russia"] },
+      { "nome": "Bolívia", "apelidos": ["bolivia"] },
+      { "nome": "Ucrânia", "apelidos": ["ucrania"] }
+    ]
+  },
+  {
+    "id": "paises-produtores-banana",
+    "titulo": "Maiores países produtores de banana",
+    "fonte": "FAO, 2023",
+    "itens": [
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Indonésia", "apelidos": ["indonesia"] },
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Equador", "apelidos": [] },
+      { "nome": "Filipinas", "apelidos": [] },
+      { "nome": "Guatemala", "apelidos": [] },
+      { "nome": "Angola", "apelidos": [] },
+      { "nome": "Tanzânia", "apelidos": ["tanzania"] },
+      { "nome": "Costa Rica", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-produtores-milho",
+    "titulo": "Maiores países produtores de milho",
+    "fonte": "USDA, 2023",
+    "itens": [
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Argentina", "apelidos": [] },
+      { "nome": "Ucrânia", "apelidos": ["ucrania"] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "México", "apelidos": ["mexico"] },
+      { "nome": "Indonésia", "apelidos": ["indonesia"] },
+      { "nome": "África do Sul", "apelidos": ["africa do sul"] },
+      { "nome": "França", "apelidos": ["franca"] }
+    ]
+  },
+  {
+    "id": "paises-produtores-trigo",
+    "titulo": "Maiores países produtores de trigo",
+    "fonte": "FAO, 2023",
+    "itens": [
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "Rússia", "apelidos": ["russia"] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "Canadá", "apelidos": ["canada"] },
+      { "nome": "França", "apelidos": ["franca"] },
+      { "nome": "Paquistão", "apelidos": ["paquistao"] },
+      { "nome": "Ucrânia", "apelidos": ["ucrania"] },
+      { "nome": "Alemanha", "apelidos": [] },
+      { "nome": "Argentina", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-produtores-acucar",
+    "titulo": "Maiores países produtores de açúcar de cana",
+    "fonte": "FAO, 2023",
+    "itens": [
+      { "nome": "Brasil", "apelidos": [] },
+      { "nome": "Índia", "apelidos": ["india"] },
+      { "nome": "China", "apelidos": [] },
+      { "nome": "Tailândia", "apelidos": ["tailandia"] },
+      { "nome": "Estados Unidos", "apelidos": ["eua", "usa"] },
+      { "nome": "México", "apelidos": ["mexico"] },
+      { "nome": "Rússia", "apelidos": ["russia"] },
+      { "nome": "Paquistão", "apelidos": ["paquistao"] },
+      { "nome": "Austrália", "apelidos": ["australia"] },
+      { "nome": "Guatemala", "apelidos": [] }
+    ]
+  },
+  {
+    "id": "paises-mais-populosos-africa",
+    "titulo": "Países mais populosos da África",
+    "fonte": "ONU, 2024",
+    "itens": [
+      { "nome": "Nigéria", "apelidos": ["nigeria"] },
+      { "nome": "Etiópia", "apelidos": ["etiopia"] },
+      { "nome": "Egito", "apelidos": [] },
+      { "nome": "República Democrática do Congo", "apelidos": ["rdc"] },
+      { "nome": "Tanzânia", "apelidos": ["tanzania"] },
+      { "nome": "África do Sul", "apelidos": ["africa do sul"] },
+      { "nome": "Quênia", "apelidos": ["quenia"] },
+      { "nome": "Uganda", "apelidos": [] },
+      { "nome": "Argélia", "apelidos": ["argelia"] },
+      { "nome": "Sudão", "apelidos": ["sudao"] }
+    ]
+  }
+]
