@@ -95,8 +95,9 @@ Cascata determinística, para na primeira etapa que casar:
    `da`, `do`).
 2. **Apelidos** cadastrados no JSON por item. Ex.: `"Estados Unidos"` →
    `["eua", "usa", "estados unidos da america"]`.
-3. **Similaridade** por Levenshtein normalizado, limiar ≥ 0.85, com limiar mais rígido para
-   strings curtas (≤ 5 caracteres exigem match exato após normalização).
+3. **Similaridade** por Damerau-Levenshtein normalizado (variante OSA, em que a troca de duas
+   letras vizinhas custa uma única edição), limiar ≥ 0.85, com regra mais rígida para strings
+   curtas (menos de 6 caracteres exigem match exato após normalização).
 
 O resultado é binário: casou ou não casou. Não há diálogo de confirmação — a decisão é
 automática, conforme escolhido no brainstorming.
