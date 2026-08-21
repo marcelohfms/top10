@@ -576,14 +576,12 @@
       {
         "nome": "Antártida",
         "apelidos": [
-          "deserto antartico",
           "polo sul"
         ]
       },
       {
         "nome": "Ártico",
         "apelidos": [
-          "deserto artico",
           "polo norte"
         ]
       },
@@ -2260,7 +2258,7 @@
   {
     "id": "primeiros-presidentes-eua",
     "titulo": "Primeiros 10 presidentes dos Estados Unidos, em ordem cronológica de posse",
-    "fonte": "registro histórico oficial dos EUA",
+    "fonte": "registro histórico oficial dos EUA, até 2023",
     "itens": [
       {
         "nome": "George Washington",
