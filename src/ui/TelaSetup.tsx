@@ -1,6 +1,18 @@
 import { useState } from 'react'
 import type { Jogador, ModoDuracao } from '../engine/types'
 
+// `crypto.randomUUID` so existe em contexto seguro. Um `vite preview --host`
+// aberto em http://192.168.x.x:4173 (celular na mesa, notebook espelhado na
+// TV) nao e seguro, e ali a chamada quebraria o botao de adicionar jogador.
+// Os ids so precisam ser unicos dentro de uma partida, entao um contador
+// local basta.
+let contadorDeJogadores = 0
+
+function novoIdDeJogador(): string {
+  contadorDeJogadores += 1
+  return `jogador-${contadorDeJogadores}`
+}
+
 type Props = {
   aoConfigurar: (jogadores: Jogador[], modo: ModoDuracao) => void
 }
@@ -15,7 +27,7 @@ export function TelaSetup({ aoConfigurar }: Props) {
   function adicionar() {
     const limpo = nome.trim()
     if (limpo === '') return
-    setJogadores([...jogadores, { id: crypto.randomUUID(), nome: limpo }])
+    setJogadores([...jogadores, { id: novoIdDeJogador(), nome: limpo }])
     setNome('')
   }
 

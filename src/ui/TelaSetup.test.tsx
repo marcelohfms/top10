@@ -55,6 +55,30 @@ describe('TelaSetup', () => {
     expect(aoConfigurar).toHaveBeenCalledWith(expect.any(Array), { tipo: 'tempo', minutos: 45 })
   })
 
+  it('adiciona jogadores mesmo sem crypto.randomUUID (contexto nao seguro)', async () => {
+    // `vite preview --host` aberto em http://192.168.x.x:4173 nao e um contexto
+    // seguro: `crypto.randomUUID` simplesmente nao existe la.
+    const descritor = Object.getOwnPropertyDescriptor(globalThis, 'crypto')
+    Object.defineProperty(globalThis, 'crypto', { value: undefined, configurable: true })
+    try {
+      const aoConfigurar = vi.fn()
+      render(<TelaSetup aoConfigurar={aoConfigurar} />)
+      const usuario = userEvent.setup()
+
+      for (const nome of ['Ana', 'Bruno']) {
+        await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+        await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+      }
+      await usuario.click(screen.getByRole('button', { name: 'Começar partida' }))
+
+      const [jogadores] = aoConfigurar.mock.calls[0]
+      expect(jogadores.map((j: { nome: string }) => j.nome)).toEqual(['Ana', 'Bruno'])
+      expect(new Set(jogadores.map((j: { id: string }) => j.id)).size).toBe(2)
+    } finally {
+      if (descritor) Object.defineProperty(globalThis, 'crypto', descritor)
+    }
+  })
+
   it('remove um jogador da lista', async () => {
     render(<TelaSetup aoConfigurar={vi.fn()} />)
     const usuario = userEvent.setup()
