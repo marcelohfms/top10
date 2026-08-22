@@ -1,7 +1,7 @@
 # Top 10 com Blefe
 
 Jogo de festa local, jogado em grupo compartilhando um único notebook. A cada
-rodada uma categoria é sorteada (ex.: "Rios mais longos do mundo") e os
+rodada o grupo escolhe uma categoria (ex.: "Rios mais longos do mundo") e os
 jogadores se revezam dizendo itens que acham que estão entre os 10 primeiros
 daquela lista — sem poder repetir o que já foi dito. Só que ninguém vê a
 lista real: dá para blefar, e blefar é parte do jogo.
@@ -10,7 +10,8 @@ lista real: dá para blefar, e blefar é parte do jogo.
 
 1. Cada jogador entra com um nome. A partida pode ser configurada para durar
    uma quantidade fixa de **categorias** ou um tempo total em **minutos**.
-2. Em cada rodada uma categoria é escolhida entre as ainda não jogadas.
+2. Em cada rodada o grupo escolhe a categoria, numa grade com as que ainda
+   não foram jogadas nesta partida.
 3. Os jogadores dão palpites em turnos, na ordem em que entraram na rodada.
    Um palpite não pode repetir (mesmo com erro de digitação/acento/plural)
    um palpite já dado nessa rodada.
@@ -19,21 +20,27 @@ lista real: dá para blefar, e blefar é parte do jogo.
 5. Quando alguém duvida, a dúvida revela **apenas se o item existe ou não**
    na lista real — nunca em qual posição ele está. Se o item existir, quem
    duvidou é eliminado da rodada; se não existir (foi um blefe), quem deu o
-   palpite é eliminado.
+   palpite é eliminado. Nos dois casos a vez segue para o próximo jogador
+   vivo **depois do autor do palpite**, na ordem original.
 6. A rodada termina quando resta um único jogador vivo — ele vence a rodada e
    ganha um ponto. A lista completa da categoria é revelada ao final da
    rodada.
 7. No modo por tempo, se o cronômetro da partida chegar a zero no meio de uma
-   rodada, o jogo pausa e pergunta se vocês querem **terminar essa categoria**
-   (o cronômetro fica pausado até a rodada acabar) ou **encerrar a partida
-   agora** (a rodada em andamento é descartada sem pontuação, mas sua lista
-   ainda é mostrada na tela final).
+   rodada, o jogo pausa (inclusive o cronômetro, para que a deliberação não
+   consuma tempo) e pergunta se vocês querem **terminar essa categoria** — a
+   rodada segue normalmente até sobrar um jogador e vale ponto, e a partida
+   encerra logo depois, sem começar categoria nova — ou **encerrar a partida
+   agora**, caso em que a rodada em andamento é descartada sem pontuação, mas
+   sua lista ainda é mostrada na tela final.
 8. Vence a partida quem tiver mais pontos ao final. A tela de fim de jogo
    mostra o placar e a lista completa de todas as categorias jogadas
    (incluindo a que foi interrompida pelo tempo, se houver).
 
 O estado da partida é salvo automaticamente no navegador (`localStorage`), então
-recarregar a página no meio de uma partida não perde o progresso.
+recarregar a página no meio de uma partida não perde o progresso. As listas
+secretas **não** vão para o `localStorage`: só o identificador da categoria é
+gravado, e a lista é recarregada do catálogo do próprio jogo. Abrir o DevTools
+no meio da rodada não entrega a resposta.
 
 ## Como rodar
 
@@ -86,7 +93,8 @@ Regras a respeitar:
   `apelidos` só para variações que não são apenas "erro de grafia" do nome
   principal (siglas, nomes populares, etc.).
 - **Nenhum item da categoria pode combinar (fuzzy-match) com outro item da
-  mesma categoria** — nem pelo nome, nem por um apelido. Isso é validado
+  mesma categoria** — nenhuma forma de um item (nome ou apelido) pode casar
+  com nenhuma forma de outro item. Isso é validado
   automaticamente em `src/data/categorias.test.ts`: rode `npm test` depois de
   adicionar a categoria e confira que o teste "não tem itens que colidem pelo
   matching" continua passando para o seu novo `id`. Se dois itens forem
