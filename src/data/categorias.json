@@ -571,7 +571,7 @@
   {
     "id": "maiores-desertos",
     "titulo": "Maiores desertos do mundo por área (incluindo desertos polares)",
-    "fonte": "National Geographic, 2023",
+    "fonte": "compilação geográfica geral (área aproximada), 2023",
     "itens": [
       {
         "nome": "Antártida",
@@ -592,9 +592,9 @@
         ]
       },
       {
-        "nome": "Rub al-Khali",
+        "nome": "Deserto da Arábia",
         "apelidos": [
-          "deserto da arabia",
+          "rub al-khali",
           "empty quarter"
         ]
       },
@@ -615,21 +615,22 @@
         ]
       },
       {
-        "nome": "Grande Deserto Vitória",
-        "apelidos": [
-          "great victoria desert"
-        ]
-      },
-      {
         "nome": "Deserto da Síria",
         "apelidos": [
           "deserto sirio"
         ]
       },
       {
-        "nome": "Grande Deserto de Areia",
+        "nome": "Grande Bacia",
         "apelidos": [
-          "great sandy desert"
+          "great basin",
+          "deserto da grande bacia"
+        ]
+      },
+      {
+        "nome": "Chihuahua",
+        "apelidos": [
+          "deserto de chihuahua"
         ]
       }
     ]
@@ -1078,7 +1079,7 @@
   {
     "id": "filmes-maior-bilheteria",
     "titulo": "Filmes de maior bilheteria mundial da história do cinema",
-    "fonte": "Box Office Mojo, 2024",
+    "fonte": "Box Office Mojo, bilheteria mundial acumulada, fechamento de 2024",
     "itens": [
       {
         "nome": "Avatar",
@@ -1120,15 +1121,16 @@
         ]
       },
       {
-        "nome": "Jurassic World",
+        "nome": "Divertida Mente 2",
         "apelidos": [
-          "mundo jurassico"
+          "divertidamente 2",
+          "inside out 2"
         ]
       },
       {
-        "nome": "Vingadores: Era de Ultron",
+        "nome": "Jurassic World",
         "apelidos": [
-          "avengers age of ultron"
+          "mundo jurassico"
         ]
       },
       {
@@ -1272,7 +1274,7 @@
   {
     "id": "paises-mais-ouros-olimpicos",
     "titulo": "Países com mais medalhas de ouro na história dos Jogos Olímpicos de Verão",
-    "fonte": "COI/Comitê Olímpico Internacional, quadro histórico, 2023",
+    "fonte": "COI, quadro histórico dos Jogos de Verão até Tóquio 2020 (só Jogos de Verão; URSS, Equipe Unificada e Rússia contadas como países distintos)",
     "itens": [
       {
         "nome": "Estados Unidos",
@@ -1314,19 +1316,19 @@
         "apelidos": []
       },
       {
+        "nome": "Rússia",
+        "apelidos": [
+          "russia"
+        ]
+      },
+      {
         "nome": "Hungria",
         "apelidos": []
       },
       {
-        "nome": "Austrália",
+        "nome": "Japão",
         "apelidos": [
-          "australia"
-        ]
-      },
-      {
-        "nome": "Suécia",
-        "apelidos": [
-          "suecia"
+          "japao"
         ]
       }
     ]
@@ -1334,7 +1336,7 @@
   {
     "id": "imperios-maior-extensao",
     "titulo": "Impérios de maior extensão territorial da história",
-    "fonte": "compilação histórica geral, 2023",
+    "fonte": "compilação histórica geral (área no auge, em milhões de km²), 2023",
     "itens": [
       {
         "nome": "Império Britânico",
@@ -1393,9 +1395,9 @@
         ]
       },
       {
-        "nome": "Império Português",
+        "nome": "Império Xiongnu",
         "apelidos": [
-          "imperio portugues"
+          "xiongnu"
         ]
       }
     ]
@@ -1938,8 +1940,8 @@
   },
   {
     "id": "paises-produtores-acucar",
-    "titulo": "Maiores países produtores de açúcar de cana",
-    "fonte": "FAO, 2023",
+    "titulo": "Maiores países produtores de açúcar (cana e beterraba somadas)",
+    "fonte": "FAO, produção total de açúcar, 2023",
     "itens": [
       {
         "nome": "Brasil",
@@ -2063,8 +2065,8 @@
   },
   {
     "id": "tenistas-mais-titulos-grand-slam",
-    "titulo": "Tenistas (simples masculino) com mais títulos de Grand Slam",
-    "fonte": "ATP/ITF, registro histórico, 2024",
+    "titulo": "Tenistas (simples masculino) com mais títulos de Grand Slam na Era Aberta",
+    "fonte": "ATP/ITF, títulos de Grand Slam a partir de 1968, 2024",
     "itens": [
       {
         "nome": "Novak Djokovic",
@@ -2091,18 +2093,6 @@
         ]
       },
       {
-        "nome": "Roy Emerson",
-        "apelidos": [
-          "emerson"
-        ]
-      },
-      {
-        "nome": "Rod Laver",
-        "apelidos": [
-          "laver"
-        ]
-      },
-      {
         "nome": "Björn Borg",
         "apelidos": [
           "bjorn borg",
@@ -2110,15 +2100,10 @@
         ]
       },
       {
-        "nome": "Bill Tilden",
+        "nome": "André Agassi",
         "apelidos": [
-          "tilden"
-        ]
-      },
-      {
-        "nome": "Ken Rosewall",
-        "apelidos": [
-          "rosewall"
+          "andre agassi",
+          "agassi"
         ]
       },
       {
@@ -2126,13 +2111,31 @@
         "apelidos": [
           "connors"
         ]
+      },
+      {
+        "nome": "Ivan Lendl",
+        "apelidos": [
+          "lendl"
+        ]
+      },
+      {
+        "nome": "John McEnroe",
+        "apelidos": [
+          "mcenroe"
+        ]
+      },
+      {
+        "nome": "Mats Wilander",
+        "apelidos": [
+          "wilander"
+        ]
       }
     ]
   },
   {
     "id": "selecoes-mais-participacoes-copa-do-mundo",
     "titulo": "Seleções de futebol masculino com mais participações em Copas do Mundo",
-    "fonte": "FIFA, registro histórico, 2022",
+    "fonte": "FIFA, participações em fases finais de Copa do Mundo até 2022",
     "itens": [
       {
         "nome": "Brasil",
@@ -2179,10 +2182,9 @@
         ]
       },
       {
-        "nome": "Coreia do Sul",
+        "nome": "Uruguai",
         "apelidos": [
-          "korea",
-          "coreia do sul"
+          "uruguay"
         ]
       }
     ]
@@ -2190,7 +2192,7 @@
   {
     "id": "artilheiros-champions-league",
     "titulo": "Jogadores com mais gols na história da Champions League/Copa dos Campeões",
-    "fonte": "UEFA, registro histórico, 2024",
+    "fonte": "UEFA, gols na Champions League/Copa dos Campeões até a temporada 2024/25",
     "itens": [
       {
         "nome": "Cristiano Ronaldo",
@@ -2224,15 +2226,16 @@
         ]
       },
       {
-        "nome": "Ruud van Nistelrooy",
+        "nome": "Thomas Müller",
         "apelidos": [
-          "van nistelrooy"
+          "thomas muller",
+          "muller"
         ]
       },
       {
-        "nome": "Thierry Henry",
+        "nome": "Ruud van Nistelrooy",
         "apelidos": [
-          "henry"
+          "van nistelrooy"
         ]
       },
       {
@@ -2242,15 +2245,15 @@
         ]
       },
       {
-        "nome": "Alfredo Di Stéfano",
+        "nome": "Thierry Henry",
         "apelidos": [
-          "di stefano"
+          "henry"
         ]
       },
       {
-        "nome": "Andriy Shevchenko",
+        "nome": "Alfredo Di Stéfano",
         "apelidos": [
-          "shevchenko"
+          "di stefano"
         ]
       }
     ]
