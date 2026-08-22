@@ -63,3 +63,35 @@ export type EstadoRelogio = {
   msPausados: number
   expirado: boolean
 }
+
+export type FaseJogo = 'setup' | 'em_rodada' | 'revelacao' | 'decisao_tempo' | 'fim_jogo'
+
+export type RodadaConcluida = {
+  categoria: Categoria
+  vencedorId: string | null
+  abortada: boolean
+}
+
+export type EstadoJogo = {
+  fase: FaseJogo
+  catalogo: Categoria[]
+  jogadores: Jogador[]
+  placar: Record<string, number>
+  relogio: EstadoRelogio
+  rodada: EstadoRodada | null
+  concluidas: RodadaConcluida[]
+  encerrarAposRodada: boolean
+  faseAntesDaDecisao: FaseJogo | null
+}
+
+export type AcaoJogo =
+  | { tipo: 'configurar'; jogadores: Jogador[]; modo: ModoDuracao }
+  | { tipo: 'iniciar_rodada'; categoriaId: string }
+  | { tipo: 'rodada'; acao: AcaoRodada }
+  | { tipo: 'tick' }
+  | { tipo: 'decidir_expiracao'; decisao: 'encerrar' | 'terminar_categoria' }
+  | { tipo: 'avancar' }
+
+export type ResultadoJogo =
+  | { ok: true; estado: EstadoJogo }
+  | { ok: false; erro: ErroRodada | 'acao_invalida'; estado: EstadoJogo }
