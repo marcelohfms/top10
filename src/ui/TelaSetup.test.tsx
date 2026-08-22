@@ -65,4 +65,47 @@ describe('TelaSetup', () => {
 
     expect(screen.queryByText('Ana')).not.toBeInTheDocument()
   })
+
+  it('desabilita comecar partida quando a quantidade de categorias esta vazia', async () => {
+    render(<TelaSetup aoConfigurar={vi.fn()} />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('radio', { name: 'Por categorias' }))
+    await usuario.clear(screen.getByLabelText('Quantidade de categorias'))
+
+    expect(screen.getByRole('button', { name: 'Começar partida' })).toBeDisabled()
+  })
+
+  it('desabilita comecar partida quando os minutos estao vazios', async () => {
+    render(<TelaSetup aoConfigurar={vi.fn()} />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('radio', { name: 'Por tempo' }))
+    await usuario.clear(screen.getByLabelText('Minutos de partida'))
+
+    expect(screen.getByRole('button', { name: 'Começar partida' })).toBeDisabled()
+  })
+
+  it('reabilita comecar partida ao voltar para categorias com quantidade valida', async () => {
+    render(<TelaSetup aoConfigurar={vi.fn()} />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('radio', { name: 'Por tempo' }))
+    await usuario.clear(screen.getByLabelText('Minutos de partida'))
+    await usuario.click(screen.getByRole('radio', { name: 'Por categorias' }))
+
+    expect(screen.getByRole('button', { name: 'Começar partida' })).not.toBeDisabled()
+  })
 })

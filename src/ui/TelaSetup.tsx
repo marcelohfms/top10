@@ -25,6 +25,11 @@ export function TelaSetup({ aoConfigurar }: Props) {
     aoConfigurar(jogadores, modo)
   }
 
+  const duracaoValida =
+    tipoModo === 'categorias'
+      ? Number.isInteger(quantidade) && quantidade >= 1
+      : Number.isInteger(minutos) && minutos >= 1
+
   return (
     <section className="tela tela-setup">
       <h1>Top 10 com Blefe</h1>
@@ -106,7 +111,12 @@ export function TelaSetup({ aoConfigurar }: Props) {
         </div>
       )}
 
-      <button type="button" className="principal" disabled={jogadores.length < 2} onClick={comecar}>
+      <button
+        type="button"
+        className="principal"
+        disabled={jogadores.length < 2 || !duracaoValida}
+        onClick={comecar}
+      >
         Começar partida
       </button>
     </section>
