@@ -105,3 +105,8 @@ Regras a respeitar:
 Depois de editar o JSON, rode `npm test` — o arquivo inteiro é validado por
 `categorias.test.ts` (mínimo de 30 categorias, ids únicos, exatamente 10 itens
 por categoria, título e fonte preenchidos, e a checagem de colisão acima).
+
+Duas categorias (maiores produtores de açúcar, países com mais ouros
+olímpicos) foram removidas por ora porque não foi possível confirmar o top 10
+delas com confiança. Contribuições são bem-vindas: se alguém confirmar o
+ranking numa fonte real, elas voltam.

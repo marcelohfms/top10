@@ -1272,68 +1272,6 @@
     ]
   },
   {
-    "id": "paises-mais-ouros-olimpicos",
-    "titulo": "Países com mais medalhas de ouro na história dos Jogos Olímpicos de Verão",
-    "fonte": "COI, quadro histórico dos Jogos de Verão até Tóquio 2020 (só Jogos de Verão; URSS, Equipe Unificada e Rússia contadas como países distintos)",
-    "itens": [
-      {
-        "nome": "Estados Unidos",
-        "apelidos": [
-          "eua",
-          "usa"
-        ]
-      },
-      {
-        "nome": "União Soviética",
-        "apelidos": [
-          "urss"
-        ]
-      },
-      {
-        "nome": "Grã-Bretanha",
-        "apelidos": [
-          "reino unido"
-        ]
-      },
-      {
-        "nome": "China",
-        "apelidos": []
-      },
-      {
-        "nome": "França",
-        "apelidos": [
-          "franca"
-        ]
-      },
-      {
-        "nome": "Itália",
-        "apelidos": [
-          "italia"
-        ]
-      },
-      {
-        "nome": "Alemanha",
-        "apelidos": []
-      },
-      {
-        "nome": "Rússia",
-        "apelidos": [
-          "russia"
-        ]
-      },
-      {
-        "nome": "Hungria",
-        "apelidos": []
-      },
-      {
-        "nome": "Japão",
-        "apelidos": [
-          "japao"
-        ]
-      }
-    ]
-  },
-  {
     "id": "imperios-maior-extensao",
     "titulo": "Impérios de maior extensão territorial da história",
     "fonte": "compilação histórica geral (área no auge, em milhões de km²), 2023",
@@ -1934,68 +1872,6 @@
       },
       {
         "nome": "Argentina",
-        "apelidos": []
-      }
-    ]
-  },
-  {
-    "id": "paises-produtores-acucar",
-    "titulo": "Maiores países produtores de açúcar (cana e beterraba somadas)",
-    "fonte": "FAO, produção total de açúcar, 2023",
-    "itens": [
-      {
-        "nome": "Brasil",
-        "apelidos": []
-      },
-      {
-        "nome": "Índia",
-        "apelidos": [
-          "india"
-        ]
-      },
-      {
-        "nome": "China",
-        "apelidos": []
-      },
-      {
-        "nome": "Tailândia",
-        "apelidos": [
-          "tailandia"
-        ]
-      },
-      {
-        "nome": "Estados Unidos",
-        "apelidos": [
-          "eua",
-          "usa"
-        ]
-      },
-      {
-        "nome": "México",
-        "apelidos": [
-          "mexico"
-        ]
-      },
-      {
-        "nome": "Rússia",
-        "apelidos": [
-          "russia"
-        ]
-      },
-      {
-        "nome": "Paquistão",
-        "apelidos": [
-          "paquistao"
-        ]
-      },
-      {
-        "nome": "Austrália",
-        "apelidos": [
-          "australia"
-        ]
-      },
-      {
-        "nome": "Guatemala",
         "apelidos": []
       }
     ]

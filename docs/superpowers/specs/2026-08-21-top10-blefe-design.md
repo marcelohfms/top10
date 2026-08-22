@@ -167,6 +167,9 @@ duplicidade ambígua).
 Meta inicial: 30 a 50 categorias em português, com temas variados (geografia, ciência,
 cultura pop, esporte, história, comida).
 
+Regra permanente: quando a composição de um top 10 não puder ser verificada com confiança,
+a categoria fica de fora — uma lista errada elimina justamente quem acertou.
+
 ## 8. Persistência
 
 Placar e progresso da partida em memória, espelhados em `localStorage` a cada transição de
