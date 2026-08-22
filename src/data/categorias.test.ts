@@ -26,11 +26,17 @@ describe('catalogo de categorias', () => {
   it.each(categorias.map((c) => [c.id, c] as const))(
     '%s nao tem itens que colidem pelo matching',
     (_id, categoria) => {
+      // Compara TODAS as formas de cada item (nome + apelidos) contra todas as
+      // formas de todos os outros: um palpite chega como qualquer uma delas, e
+      // e isso que o README promete ao autor de categoria.
       const colisoes: string[] = []
       for (let i = 0; i < categoria.itens.length; i++) {
+        const formas = [categoria.itens[i].nome, ...categoria.itens[i].apelidos]
         for (let j = i + 1; j < categoria.itens.length; j++) {
-          if (casaComItem(categoria.itens[i].nome, categoria.itens[j])) {
-            colisoes.push(`${categoria.itens[i].nome} ~ ${categoria.itens[j].nome}`)
+          for (const forma of formas) {
+            if (casaComItem(forma, categoria.itens[j])) {
+              colisoes.push(`${forma} (${categoria.itens[i].nome}) ~ ${categoria.itens[j].nome}`)
+            }
           }
         }
       }
