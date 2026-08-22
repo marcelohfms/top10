@@ -20,11 +20,28 @@ export function App() {
   const [erro, setErro] = useState<ErroRodada | 'acao_invalida' | null>(null)
 
   function despachar(acao: AcaoJogo) {
-    setEstado((atual) => {
-      const r = aplicarAcaoJogo(atual, acao, Date.now())
-      setErro(r.ok ? null : r.erro)
-      return r.estado
-    })
+    // Le o relogio uma unica vez, fora de qualquer updater.
+    const agora = Date.now()
+
+    if (acao.tipo === 'tick') {
+      // O tick automatico do relogio nao e uma acao do jogador: nunca deve
+      // definir nem apagar o alerta de erro da ultima acao real, entao nem
+      // toca em `erro`. Usa o updater funcional (em vez do `estado` do
+      // closure) porque o efeito que dispara o tick so e recriado quando o
+      // modo muda, entao seu `despachar` capturado pode estar preso a um
+      // render antigo; o updater sempre recebe o estado mais recente.
+      setEstado((atual) => aplicarAcaoJogo(atual, acao, agora).estado)
+      return
+    }
+
+    // As demais acoes sempre chegam por um callback do render atual (clique
+    // em botao), entao `estado` do closure ja e o mais recente: da para
+    // calcular o resultado fora de qualquer updater e manter os dois
+    // setState puros e independentes, sem depender de nenhum comportamento
+    // interno do React para ler o resultado de volta.
+    const resultado = aplicarAcaoJogo(estado, acao, agora)
+    setEstado(resultado.estado)
+    setErro(resultado.ok ? null : resultado.erro)
   }
 
   useEffect(() => {
