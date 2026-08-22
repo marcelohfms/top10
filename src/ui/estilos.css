@@ -1,4 +1,418 @@
+/*
+  Top 10 com Blefe — estilos globais.
+
+  Contexto de uso: um grupo de pessoas em volta de UM dispositivo (notebook
+  na mesa, às vezes espelhado numa TV), passado de mão em mão, geralmente à
+  noite. Por isso:
+  - tipografia grande e alto contraste, legível a alguns metros de distância;
+  - alvos de toque/clique generosos (nada de botões pequenos: um clique
+    errado pode eliminar o jogador errado e estragar a rodada);
+  - tema escuro por padrão;
+  - `.jogador-eliminado` nunca depende só de cor (temos jogadores
+    daltônicos na mesa): usa opacidade reduzida + risco no texto + ícone.
+*/
+
+:root {
+  color-scheme: dark;
+
+  /* Paleta — tons neutros escuros com um acento em âmbar (bom contraste
+     em projeção/TV, não é vermelho nem verde, então não colide com o
+     par de sinalizações "certo/errado" que usamos em botões de ação). */
+  --cor-fundo: #12141a;
+  --cor-fundo-alt: #1b1e27;
+  --cor-fundo-elevado: #242835;
+  --cor-borda: #3a3f4f;
+  --cor-texto: #f2f3f6;
+  --cor-texto-fraco: #b6bac6;
+
+  --cor-acento: #f5b942;
+  --cor-acento-texto: #1b1400;
+  --cor-acento-hover: #ffcc66;
+
+  --cor-perigo: #e5484d;
+  --cor-perigo-texto: #2a0505;
+  --cor-sucesso: #4ade80;
+
+  --cor-foco: #7cc4ff;
+
+  --fonte-base: 'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+
+  --raio: 0.75rem;
+  --espaco-1: 0.5rem;
+  --espaco-2: 1rem;
+  --espaco-3: 1.5rem;
+  --espaco-4: 2.5rem;
+
+  --alvo-minimo: 3rem;
+
+  font-family: var(--fonte-base);
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  padding: 0;
+  background: var(--cor-fundo);
+  color: var(--cor-texto);
+}
+
+body {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.2;
+  margin: 0 0 var(--espaco-2);
+}
+
+h1 {
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+}
+
+h2 {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: var(--cor-texto-fraco);
+}
+
+button {
+  font-family: inherit;
+}
+
+input {
+  font-family: inherit;
+}
+
+a {
+  color: var(--cor-foco);
+}
+
+/* Foco visível — essencial quando o dispositivo passa de mão em mão e
+   várias pessoas navegam por teclado/controle remoto. */
+:focus-visible {
+  outline: 3px solid var(--cor-foco);
+  outline-offset: 2px;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Layout geral                                                            */
+/* ---------------------------------------------------------------------- */
+
+.tela {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: var(--espaco-4) var(--espaco-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-3);
+}
+
+.linha {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espaco-2);
+}
+
+.linha label {
+  font-size: 1.05rem;
+  color: var(--cor-texto-fraco);
+}
+
+.linha input {
+  flex: 1 1 12rem;
+}
+
+input[type='text'],
+input:not([type]),
+input[type='number'] {
+  background: var(--cor-fundo-alt);
+  border: 2px solid var(--cor-borda);
+  border-radius: var(--raio);
+  color: var(--cor-texto);
+  padding: 0.6rem 0.9rem;
+  font-size: 1.15rem;
+  min-height: var(--alvo-minimo);
+}
+
+input[type='number'] {
+  max-width: 8rem;
+}
+
+fieldset {
+  border: 2px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: var(--espaco-2) var(--espaco-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-3);
+}
+
+fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.15rem;
+  min-height: var(--alvo-minimo);
+}
+
+input[type='radio'],
+input[type='checkbox'] {
+  width: 1.4rem;
+  height: 1.4rem;
+  accent-color: var(--cor-acento);
+}
+
+/* Botões genéricos — alvo generoso por padrão. */
+button {
+  min-height: var(--alvo-minimo);
+  padding: 0.6rem 1.4rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: var(--raio);
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-fundo-elevado);
+  color: var(--cor-texto);
+  cursor: pointer;
+  transition: background-color 120ms ease, transform 80ms ease;
+}
+
+button:hover:not(:disabled) {
+  background: #2d3140;
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Ação principal da tela — sempre a maior e mais chamativa. */
+.principal {
+  align-self: stretch;
+  min-height: 4rem;
+  font-size: 1.4rem;
+  background: var(--cor-acento);
+  color: var(--cor-acento-texto);
+  border-color: var(--cor-acento);
+}
+
+.principal:hover:not(:disabled) {
+  background: var(--cor-acento-hover);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Lista de jogadores (setup)                                              */
+/* ---------------------------------------------------------------------- */
+
+.lista-jogadores {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--espaco-1);
+}
+
+.lista-jogadores li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espaco-2);
+  background: var(--cor-fundo-alt);
+  border: 1px solid var(--cor-borda);
+  border-radius: var(--raio);
+  padding: 0.6rem var(--espaco-2);
+  font-size: 1.2rem;
+}
+
+.lista-jogadores button {
+  min-width: var(--alvo-minimo);
+  min-height: var(--alvo-minimo);
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  background: transparent;
+  border-color: transparent;
+  color: var(--cor-perigo);
+}
+
+.lista-jogadores button:hover:not(:disabled) {
+  background: rgba(229, 72, 77, 0.15);
+  border-color: var(--cor-perigo);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Painel de jogadores durante a partida                                   */
+/* ---------------------------------------------------------------------- */
+
+.painel-jogadores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+}
+
+.jogador-vivo,
+.jogador-eliminado {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 1.1rem;
+  border: 2px solid var(--cor-borda);
+  background: var(--cor-fundo-alt);
+}
+
+.jogador-vivo {
+  border-color: var(--cor-sucesso);
+  font-weight: 600;
+}
+
+/* Eliminado não depende só de cor: texto riscado, opacidade reduzida
+   e um ícone de "fora" antes do nome. */
+.jogador-eliminado {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.jogador-eliminado::before {
+  content: '✕';
+  color: var(--cor-perigo);
+  text-decoration: none;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Grade de categorias                                                     */
+/* ---------------------------------------------------------------------- */
+
+.grade-categorias {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+  gap: var(--espaco-2);
+}
+
+.grade-categorias button {
+  min-height: 5rem;
+  white-space: normal;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Avisos e placar                                                         */
+/* ---------------------------------------------------------------------- */
+
+.aviso {
+  border: 2px solid var(--cor-acento);
+  background: rgba(245, 185, 66, 0.12);
+  border-radius: var(--raio);
+  padding: var(--espaco-2);
+  font-size: 1.15rem;
+}
+
+.placar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espaco-2);
+  font-size: 1.2rem;
+}
+
+.fonte {
+  color: var(--cor-texto-fraco);
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+.lista-revelada {
+  list-style: decimal;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 1.15rem;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Relógio                                                                 */
+/* ---------------------------------------------------------------------- */
+
+.relogio {
+  font-variant-numeric: tabular-nums;
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* ---------------------------------------------------------------------- */
+/* Modal — interrupção do jogo (expiração de tempo)                        */
+/* ---------------------------------------------------------------------- */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--espaco-3);
+  background: rgba(6, 7, 10, 0.85);
+  backdrop-filter: blur(2px);
+}
+
+.modal > * {
+  background: var(--cor-fundo-elevado);
+  border: 2px solid var(--cor-acento);
+  border-radius: var(--raio);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.6);
+  padding: var(--espaco-4);
+  max-width: 32rem;
+  width: 100%;
+  text-align: center;
+}
+
+/* Janela de dúvida — destaque temporário durante a rodada. */
+.janela-duvida {
+  border: 2px dashed var(--cor-acento);
+  border-radius: var(--raio);
+  padding: var(--espaco-2);
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--cor-acento);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Responsivo — otimizado para notebook, sem quebrar em celular vertical.  */
+/* ---------------------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  :root {
+    font-size: 16px;
+  }
+
+  .tela {
+    padding: var(--espaco-2);
+  }
+
+  .linha {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  fieldset {
+    flex-direction: column;
+  }
+
+  .grade-categorias {
+    grid-template-columns: 1fr 1fr;
+  }
 }

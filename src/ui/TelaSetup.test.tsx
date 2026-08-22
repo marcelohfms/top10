@@ -1,0 +1,68 @@
+import { describe, it, expect, vi } from 'vitest'
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { TelaSetup } from './TelaSetup'
+
+describe('TelaSetup', () => {
+  it('exige pelo menos dois jogadores para comecar', async () => {
+    const aoConfigurar = vi.fn()
+    render(<TelaSetup aoConfigurar={aoConfigurar} />)
+    const usuario = userEvent.setup()
+
+    await usuario.type(screen.getByLabelText('Nome do jogador'), 'Ana')
+    await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+
+    expect(screen.getByRole('button', { name: 'Começar partida' })).toBeDisabled()
+  })
+
+  it('envia jogadores e modo por categorias', async () => {
+    const aoConfigurar = vi.fn()
+    render(<TelaSetup aoConfigurar={aoConfigurar} />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('radio', { name: 'Por categorias' }))
+    await usuario.clear(screen.getByLabelText('Quantidade de categorias'))
+    await usuario.type(screen.getByLabelText('Quantidade de categorias'), '5')
+    await usuario.click(screen.getByRole('button', { name: 'Começar partida' }))
+
+    expect(aoConfigurar).toHaveBeenCalledWith(
+      [
+        { id: expect.any(String), nome: 'Ana' },
+        { id: expect.any(String), nome: 'Bruno' },
+      ],
+      { tipo: 'categorias', quantidade: 5 },
+    )
+  })
+
+  it('envia modo por tempo', async () => {
+    const aoConfigurar = vi.fn()
+    render(<TelaSetup aoConfigurar={aoConfigurar} />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('radio', { name: 'Por tempo' }))
+    await usuario.clear(screen.getByLabelText('Minutos de partida'))
+    await usuario.type(screen.getByLabelText('Minutos de partida'), '45')
+    await usuario.click(screen.getByRole('button', { name: 'Começar partida' }))
+
+    expect(aoConfigurar).toHaveBeenCalledWith(expect.any(Array), { tipo: 'tempo', minutos: 45 })
+  })
+
+  it('remove um jogador da lista', async () => {
+    render(<TelaSetup aoConfigurar={vi.fn()} />)
+    const usuario = userEvent.setup()
+
+    await usuario.type(screen.getByLabelText('Nome do jogador'), 'Ana')
+    await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    await usuario.click(screen.getByRole('button', { name: 'Remover Ana' }))
+
+    expect(screen.queryByText('Ana')).not.toBeInTheDocument()
+  })
+})
