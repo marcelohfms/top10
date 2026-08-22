@@ -51,3 +51,15 @@ export type ErroRodada =
 export type ResultadoRodada =
   | { ok: true; estado: EstadoRodada }
   | { ok: false; erro: ErroRodada; estado: EstadoRodada }
+
+export type ModoDuracao =
+  | { tipo: 'categorias'; quantidade: number }
+  | { tipo: 'tempo'; minutos: number }
+
+export type EstadoRelogio = {
+  modo: ModoDuracao
+  iniciadoEm: number | null
+  pausadoEm: number | null
+  msPausados: number
+  expirado: boolean
+}
