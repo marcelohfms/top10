@@ -82,6 +82,37 @@ describe('TelaRodada — fase de palpite', () => {
     )
     expect(screen.getByRole('alert')).toHaveTextContent('já foi dito')
   })
+
+  it('envia o palpite ao pressionar Enter, igual ao botao', async () => {
+    const aoAgir = vi.fn()
+    render(
+      <TelaRodada estado={estadoEmRodada()} erro={null} aoEscolherCategoria={vi.fn()} aoAgir={aoAgir} />,
+    )
+    const usuario = userEvent.setup()
+    await usuario.type(screen.getByLabelText('Seu palpite'), 'Item 3{Enter}')
+    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: 'Item 3' })
+  })
+
+  it('envia o palpite ao pressionar Enter mesmo com o campo vazio', async () => {
+    const aoAgir = vi.fn()
+    render(
+      <TelaRodada estado={estadoEmRodada()} erro={null} aoEscolherCategoria={vi.fn()} aoAgir={aoAgir} />,
+    )
+    const usuario = userEvent.setup()
+    await usuario.type(screen.getByLabelText('Seu palpite'), '{Enter}')
+    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: '' })
+  })
+
+  it('limpa o campo apos enviar com Enter', async () => {
+    const aoAgir = vi.fn()
+    render(
+      <TelaRodada estado={estadoEmRodada()} erro={null} aoEscolherCategoria={vi.fn()} aoAgir={aoAgir} />,
+    )
+    const usuario = userEvent.setup()
+    const campo = screen.getByLabelText('Seu palpite') as HTMLInputElement
+    await usuario.type(campo, 'Item 3{Enter}')
+    expect(campo.value).toBe('')
+  })
 })
 
 describe('TelaRodada — janela de duvida', () => {

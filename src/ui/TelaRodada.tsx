@@ -9,7 +9,7 @@ type Props = {
   aoAgir: (acao: AcaoRodada) => void
 }
 
-const MENSAGENS: Record<string, string> = {
+const MENSAGENS: Record<ErroRodada | 'acao_invalida', string> = {
   palpite_vazio: 'Escreva alguma coisa antes de enviar.',
   palpite_duplicado: 'Esse palpite já foi dito nesta rodada. Tente outro.',
   fase_invalida: 'Ação fora de hora.',
@@ -35,6 +35,11 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
         </div>
       </section>
     )
+  }
+
+  const enviarPalpite = () => {
+    aoAgir({ tipo: 'palpite', texto })
+    setTexto('')
   }
 
   const ultimo = rodada.palpites[rodada.palpites.length - 1]
@@ -70,20 +75,12 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter' && texto.trim() !== '') {
-                aoAgir({ tipo: 'palpite', texto })
-                setTexto('')
+              if (e.key === 'Enter') {
+                enviarPalpite()
               }
             }}
           />
-          <button
-            type="button"
-            className="principal"
-            onClick={() => {
-              aoAgir({ tipo: 'palpite', texto })
-              setTexto('')
-            }}
-          >
+          <button type="button" className="principal" onClick={enviarPalpite}>
             Dar palpite
           </button>
         </div>
