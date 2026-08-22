@@ -34,6 +34,16 @@ function proximoVivoApos(estado: EstadoRodada, refId: string, vivos: string[]): 
   return vivos[0]
 }
 
+/**
+ * Duplicidade compara palpite com PALPITE — nunca canonicalizando os dois
+ * lados pelo item da lista via `encontrarItem`.
+ *
+ * NAO "conserte" isso: dois palpites diferentes so resolvem para o mesmo item
+ * quando esse item esta de fato na lista. Rejeitar por esse criterio provaria
+ * a mesa inteira que o item existe no top 10, sem ninguem ter duvidado — um
+ * vazamento direto do segredo, que e a mecanica central do jogo. A tolerancia
+ * a grafia continua valendo aqui, mas so entre os textos ditos na rodada.
+ */
 function jaFoiDito(estado: EstadoRodada, texto: string): boolean {
   const alvo = normalizar(texto)
   return estado.palpites.some(

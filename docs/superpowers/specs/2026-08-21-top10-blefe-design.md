@@ -67,7 +67,8 @@ JANELA_DUVIDA
         palpite ESTÁ no top 10   → X (duvidador) é eliminado
         palpite NÃO está          → autor do palpite é eliminado
         → resta 1 vivo?  sim → FIM_RODADA
-                         não → PALPITE (próximo vivo após o eliminado)
+                         não → PALPITE (próximo vivo após o AUTOR do palpite,
+                                        nos dois desfechos)
 
 FIM_RODADA
   revela a lista completa, credita 1 ponto ao sobrevivente
@@ -83,6 +84,11 @@ FIM_RODADA
   mas entra na lista de "já ditos" para efeito de duplicidade.
 - Se os 10 itens já saíram, qualquer palpite novo é necessariamente falso. O jogo não avisa;
   essa é justamente a tensão da mecânica.
+- Depois de uma dúvida resolvida que não encerra a rodada, a vez passa para o **próximo jogador
+  vivo depois do autor do palpite**, seguindo a ordem original de entrada. Isso vale nos **dois**
+  desfechos: tanto quando o eliminado é o autor quanto quando é o duvidador. O autor acabou de
+  jogar, então a rodada continua a partir dele; usar a posição do duvidador eliminado faria a vez
+  saltar para um ponto arbitrário da mesa, decidido por quem morreu.
 - Uma categoria já jogada não se repete na mesma partida.
 - Ao duvidar, revela-se **apenas** se o palpite existe ou não na lista — nunca a posição.
 

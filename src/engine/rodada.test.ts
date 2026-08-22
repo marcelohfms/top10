@@ -118,6 +118,10 @@ describe('duvidar', () => {
     )
     expect(e.eliminados).toEqual(['b'])
     expect(e.vivos).toEqual(['a', 'c'])
+    // A vez passa para o proximo vivo depois do AUTOR ('a'), nao depois do
+    // duvidador eliminado: 'a' acabou de jogar, entao o jogo segue adiante
+    // dele. Vale nos dois desfechos da duvida.
+    expect(e.vezDe).toBe('c')
     expect(e.palpites[0].resultado).toBe('confirmado')
     expect(e.ultimoEvento).toEqual({
       tipo: 'eliminado_por_duvida_errada',
