@@ -115,7 +115,12 @@ export function aplicarAcaoJogo(
       // deve reabrir o modal a cada tick.
       if (estado.encerrarAposRodada) return { ok: true, estado }
       const relogio = verificarExpiracao(estado.relogio, agora)
-      if (!relogio.expirado) return { ok: true, estado: { ...estado, relogio } }
+      if (!relogio.expirado) {
+        // Sem mudanca no relogio, devolve o proprio estado: um objeto novo a
+        // cada tick faria o React re-renderizar e o efeito de persistencia
+        // reserializar a partida inteira duas vezes por segundo.
+        return { ok: true, estado: relogio === estado.relogio ? estado : { ...estado, relogio } }
+      }
 
       // Fora de uma rodada em andamento nao ha o que decidir: encerra direto.
       if (estado.fase !== 'em_rodada' || estado.rodada === null) {

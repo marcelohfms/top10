@@ -199,6 +199,19 @@ describe('encerramento por tempo', () => {
     e = aplicar(e, T0 + 5 * MIN, { tipo: 'tick' })
     expect(e.fase).toBe(antes.fase)
   })
+
+  it('devolve o mesmo objeto quando o tick nao muda nada', () => {
+    const antes = aplicar(
+      base(),
+      T0,
+      { tipo: 'iniciar_rodada', categoriaId: 'c1' },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+    )
+    const depois = aplicar(antes, T0 + 5 * MIN, { tipo: 'tick' })
+    // Identidade referencial: o React precisa poder cortar o re-render, senao
+    // o efeito de persistencia reserializa a partida a cada 500ms.
+    expect(depois).toBe(antes)
+  })
 })
 
 describe('fim por falta de categorias', () => {
