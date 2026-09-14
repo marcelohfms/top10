@@ -33,8 +33,13 @@ const emRodada = () => aplicar(configurado(), { tipo: 'iniciar_rodada', categori
 
 describe('sigilo', () => {
   it('nao serializa nenhum item nem apelido durante a rodada', () => {
-    const e = aplicar(emRodada(), { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } })
+    // O palpite e 'Zulu', que NAO esta na lista: o texto do palpite e publico
+    // (o jogador o disse em voz alta) e tem de aparecer na visao; o que nao
+    // pode aparecer e a lista. Se o palpite fosse um item real, o nome
+    // apareceria legitimamente como texto do palpite — nao como vazamento.
+    const e = aplicar(emRodada(), { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: 'a' } })
     const texto = JSON.stringify(visaoPublica(e, 'b', false))
+    expect(texto).toContain('Zulu')
     for (const item of catalogo[0].itens) {
       expect(texto).not.toContain(item.nome)
       for (const ap of item.apelidos) expect(texto).not.toContain(ap)
@@ -113,6 +118,14 @@ describe('podeAgir', () => {
 })
 
 describe('forma', () => {
+  it('o texto de um palpite que coincide com um item aparece — e informacao publica', () => {
+    const e = aplicar(emRodada(), { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } })
+    const v = visaoPublica(e, 'b', false)
+    expect(v.rodada?.palpites[0].texto).toBe('Alfa')
+    expect(v.rodada?.palpites[0].resultado).toBe('pendente')
+    expect(v.rodada?.categoria.itens).toBeUndefined()
+  })
+
   it('carrega jogadorId, fase, placar, relogio e encerrarAposRodada', () => {
     const v = visaoPublica(emRodada(), 'b', false)
     expect(v.jogadorId).toBe('b')

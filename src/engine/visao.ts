@@ -17,17 +17,7 @@ function rodadaVisivel(estado: EstadoJogo): RodadaVisivel | null {
   if (estado.rodada === null) return null
   const revelada = estado.fase === 'revelacao' || estado.fase === 'fim_jogo'
   const { categoria, ...resto } = estado.rodada
-  if (revelada) return { ...resto, categoria }
-  // Enquanto a rodada nao e revelada, o texto de um palpite pode coincidir
-  // com um item real da lista secreta (o jogador pode ter acertado, ou
-  // blefado com o nome certo). Mostrar esse texto vazaria o item antes da
-  // hora, entao so a autoria e o resultado ficam visiveis, nunca a palavra.
-  return {
-    ...resto,
-    categoria: resumo(categoria),
-    palpites: resto.palpites.map((p) => ({ ...p, texto: '' })),
-    ultimoEvento: resto.ultimoEvento && { ...resto.ultimoEvento, palpite: '' },
-  }
+  return { ...resto, categoria: revelada ? categoria : resumo(categoria) }
 }
 
 function podeAgir(estado: EstadoJogo, jogadorId: string, ehHost: boolean): PodeAgir {
