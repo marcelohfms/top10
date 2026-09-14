@@ -6,7 +6,8 @@ import { resolverArquivoEstatico } from './src/servidor/estatico'
 import { responderApi } from './src/servidor/node-web'
 import { storeArquivo } from './src/servidor/store-arquivo'
 
-const PORTA = Number(process.env.PORTA ?? 3000)
+// PORT e o nome que plataformas como Easypanel/Heroku injetam.
+const PORTA = Number(process.env.PORTA ?? process.env.PORT ?? 3000)
 const DIST = resolve(process.env.DIST ?? 'dist')
 const DADOS = resolve(process.env.DADOS ?? 'dados/salas.json')
 

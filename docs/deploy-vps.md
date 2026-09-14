@@ -70,3 +70,22 @@ cd top10 && git pull && npm ci && npm run build && pm2 restart top10
 
 Sem banco, sem serviço externo. Salas expiram 6 h após a última atividade. Se a máquina
 reiniciar, `pm2 startup` sobe o processo e o snapshot restaura as salas.
+
+## Alternativa: Docker / Easypanel
+
+O `Dockerfile` na raiz monta a imagem em duas etapas (build do cliente, runtime só com
+dependências de produção) e sobe `tsx servidor.ts` na porta 3000.
+
+No Easypanel: crie um serviço **App** a partir do repositório GitHub (`marcelohfms/top10`,
+branch `main`, build "Dockerfile"). Depois:
+
+- **Porta**: 3000 (o servidor também aceita a variável `PORT`, que a plataforma injeta).
+- **Volume**: monte um volume em `/app/dados` — é onde fica `salas.json`; sem ele um
+  redeploy perde as salas em andamento.
+- **Domínio**: adicione o domínio no serviço; o Easypanel cuida do HTTPS.
+
+Rodando na mão:
+
+```bash
+docker build -t top10 . && docker run -d --name top10 -p 3000:3000 -v top10-dados:/app/dados top10
+```
