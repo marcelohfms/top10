@@ -4,9 +4,9 @@
 
 **Goal:** Permitir que cada jogador entre numa partida de "Top 10 com Blefe" pelo próprio aparelho, via código de sala, com o próprio campo de palpite e o próprio botão "Duvido", com o servidor rodando a engine existente e a lista secreta nunca saindo dele.
 
-**Architecture:** O front Vite + React ganha uma pasta `api/` com uma única função Vercel catch-all que delega a um roteador HTTP puro em `src/servidor/`. O estado de cada sala vive num store chave-valor com compare-and-set (Postgres via Supabase em produção, memória em dev/testes). A engine em `src/engine/` recebe três acréscimos pequenos e puros: `jogadorId` no palpite, `adicionar_jogador`, e `visaoPublica` — a projeção sem itens que vai para o cliente. O cliente faz polling de 1 s e as telas existentes ganham uma `perspectiva` por jogador.
+**Architecture:** O front Vite + React ganha um roteador HTTP puro em `src/servidor/` e um `servidor.ts` de processo único que serve o `dist/` e monta `/api` — hospedado numa VPS com `pm2` e Caddy. O estado de cada sala vive num store com compare-and-set: memória com snapshot em arquivo em produção, memória pura em dev/testes. A engine em `src/engine/` recebe três acréscimos pequenos e puros: `jogadorId` no palpite, `adicionar_jogador`, e `visaoPublica` — a projeção sem itens que vai para o cliente. O cliente faz polling de 1 s e as telas existentes ganham uma `perspectiva` por jogador.
 
-**Tech Stack:** Vite 7, React 19, TypeScript, Vitest 3, `@supabase/supabase-js`, `qrcode`, funções Vercel (Node, assinatura Web `Request → Response`).
+**Tech Stack:** Vite 7, React 19, TypeScript, Vitest 3, `qrcode`, `tsx`, Node `http` (handlers com assinatura Web `Request → Response`), `pm2` + Caddy na VPS.
 
 **Spec:** `docs/superpowers/specs/2026-09-14-multiplayer-online-design.md` — leia antes de qualquer task. O spec anterior, `docs/superpowers/specs/2026-08-21-top10-blefe-design.md`, descreve o jogo já implementado.
 
@@ -14,7 +14,7 @@
 
 - Todo o texto visível ao usuário em português do Brasil, com acentuação correta. Identificadores TypeScript sem acentos; nomes de arquivos em kebab-case ASCII.
 - `src/engine/` continua sem `react`, `react-dom`, `src/ui/`, `window`, `document`, `localStorage` e `Date.now()`. O instante atual é sempre `agora: number`.
-- `src/servidor/` é puro: sem I/O, sem `Date.now()`, sem `crypto` direto. Recebe `agora` e um gerador de ids injetado. Só `api/` e `src/servidor/store-supabase.ts` tocam o mundo externo.
+- `src/servidor/` é puro: sem I/O, sem `Date.now()`, sem `crypto` direto. Recebe `agora` e um gerador de ids injetado. Só `servidor.ts`, `src/servidor/store-arquivo.ts`, `src/servidor/node-web.ts` e `src/servidor/vite-plugin-api.ts` tocam o mundo externo (`dependenciasPadrao` em `http.ts` é a única outra exceção: injeta `Date.now` e `crypto`).
 - **A lista de itens da categoria em curso nunca sai do servidor.** Nenhuma resposta HTTP durante `em_rodada` ou `decisao_tempo` contém `itens`. Há um teste de serialização que garante isso; ele nunca pode ser enfraquecido.
 - O cliente online nunca importa `src/data/`.
 - TDD obrigatório: o teste falhando vem antes da implementação.
@@ -35,13 +35,13 @@
 | `src/servidor/tipos.ts` | `Sala`, `JogadorSala`, `AcaoSala`, `VisaoSala`, `ErroServidor`, `Geradores` |
 | `src/servidor/codigo.ts` | código de sala de 5 letras |
 | `src/servidor/store.ts` | interface `StoreSala` + `storeMemoria()` |
-| `src/servidor/store-supabase.ts` | adaptador Postgres via Supabase com CAS por UPDATE condicional |
+| `src/servidor/store-arquivo.ts` | memória + snapshot em disco após cada gravação |
+| `src/servidor/node-web.ts` | adaptador `IncomingMessage`/`ServerResponse` ↔ `Request`/`Response` |
 | `src/servidor/autorizacao.ts` | `ehHostEfetivo`, `podeExecutar` |
 | `src/servidor/sala.ts` | `criarSala`, `entrarNaSala`, `lerSala`, `aplicarAcaoNaSala` (puras) |
 | `src/servidor/http.ts` | `roteador(request, deps)`: parse, auth, store, resposta JSON |
 | `src/servidor/vite-plugin-api.ts` | monta `/api` no dev server do Vite com `storeMemoria` |
-| `api/[[...rota]].ts` | função Vercel catch-all → `roteador` |
-| `vercel.json` | rewrite SPA |
+| `servidor.ts` | processo de produção: estático com fallback SPA + `/api` |
 | `src/ui/online/credenciais.ts` | `localStorage` de `{ jogadorId, token }` por sala |
 | `src/ui/online/cliente-api.ts` | `fetch` tipado das 4 rotas |
 | `src/ui/online/useSala.ts` | polling, `agir`, erros, backoff, aba oculta |
@@ -1262,48 +1262,55 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 
 ---
 
-### Task 6: Roteador HTTP, função Vercel, plugin de dev e adaptador Supabase
+### Task 6: Roteador HTTP, servidor Node, plugin de dev e store em arquivo
 
 **Files:**
-- Create: `src/servidor/http.ts`, `src/servidor/vite-plugin-api.ts`, `src/servidor/store-supabase.ts`, `api/[[...rota]].ts`, `vercel.json`
-- Modify: `vite.config.ts`, `package.json`, `tsconfig.json` (incluir `api`)
-- Test: `src/servidor/http.test.ts`
+- Create: `src/servidor/http.ts`, `src/servidor/node-web.ts`, `src/servidor/store-arquivo.ts`, `src/servidor/vite-plugin-api.ts`, `servidor.ts`
+- Modify: `vite.config.ts`, `package.json`, `tsconfig.json` (incluir `servidor.ts`), `.gitignore` (`dados/`)
+- Test: `src/servidor/http.test.ts`, `src/servidor/store-arquivo.test.ts`
 
 **Interfaces:**
 - Produces:
 
 ```ts
-export type DependenciasHttp = {
-  store: StoreSala
-  catalogo: Categoria[]
-  agora: () => number
-  geradores: Geradores
-}
+// http.ts
+export type DependenciasHttp = { store: StoreSala; catalogo: Categoria[]; agora: () => number; geradores: Geradores }
 export function roteador(request: Request, deps: DependenciasHttp): Promise<Response>
 export function dependenciasPadrao(store: StoreSala): DependenciasHttp   // Date.now + crypto + carregarCategorias
+// node-web.ts
+export function paraRequest(req: IncomingMessage): Promise<Request>
+export function escreverResponse(res: ServerResponse, resp: Response): Promise<void>
+// store-arquivo.ts
+export function storeArquivo(caminho: string): Promise<StoreSala>   // carrega o JSON se existir; grava apos cada gravarSe bem-sucedido
 ```
 
 Rotas (prefixo `/api`):
 - `POST /api/salas` `{ apelido }` → `201 { codigo, jogadorId, token, versao, visao }`
 - `POST /api/salas/:codigo/entrar` `{ apelido }` → `200 { jogadorId, token, versao, visao }`
-- `GET /api/salas/:codigo?versao=N` + header `X-Jogador-Id`, `X-Jogador-Token` → `200 { versao, visao }` | `204`
+- `GET /api/salas/:codigo?versao=N` + headers `X-Jogador-Id`, `X-Jogador-Token` → `200 { versao, visao }` | `204`
 - `POST /api/salas/:codigo/acoes` `{ versao, acao }` + headers → `200 { versao, visao }` | `409 { erro, versao, visao }`
 - Erros: `{ erro, mensagem, detalhe? }` com os HTTP da seção 5 do spec.
+- **TTL:** `carregarSala` trata como inexistente (404) uma sala com `atualizadaEm` há mais de `TTL_SALA_MS`. É no roteador, não no store, para valer igual em memória e em arquivo.
 
 `gerarCodigo` colide? `POST /api/salas` tenta até 5 códigos; se todos existirem, 503.
 
-- [ ] **Step 1: Instalar dependência**
+O servidor de produção é **um único processo Node** (`servidor.ts`): serve `dist/` como estático com fallback SPA para `index.html`, e monta `/api` no `roteador`. O store é `storeArquivo('dados/salas.json')`: memória como fonte da verdade, com snapshot em disco a cada gravação para sobreviver a um restart do `pm2`.
+
+- [ ] **Step 1: Instalar dependência de runtime**
 
 ```bash
-npm install @supabase/supabase-js
+npm install tsx
 ```
 
-- [ ] **Step 2: Teste falhando** — `src/servidor/http.test.ts`:
+`tsx` roda `servidor.ts` direto, sem etapa de compilação do servidor, em qualquer Node ≥ 18.
+
+- [ ] **Step 2: Teste falhando do roteador** — `src/servidor/http.test.ts`:
 
 ```ts
 import { describe, it, expect, beforeEach } from 'vitest'
 import { roteador, type DependenciasHttp } from './http'
 import { storeMemoria } from './store'
+import { TTL_SALA_MS } from './tipos'
 import type { Categoria } from '../engine/types'
 
 function cat(id: string): Categoria {
@@ -1391,30 +1398,34 @@ describe('ler', () => {
     expect(b.visao.jogadorId).toBe(outro.id)
     expect(b.visao.jogadores).toHaveLength(2)
   })
+
+  it('sala parada ha mais de 6 h e 404', async () => {
+    const { host } = await salaComDois()
+    relogio += TTL_SALA_MS + 1
+    const r = await req('GET', '/api/salas/ABCDE', { headers: auth(host.id, host.token) })
+    expect(r.status).toBe(404)
+  })
 })
 
 describe('acoes', () => {
+  const acao = (c: { id: string; token: string }, versao: number, acao: unknown) =>
+    req('POST', '/api/salas/ABCDE/acoes', {
+      ...json({ versao, acao }),
+      headers: { ...auth(c.id, c.token), 'content-type': 'application/json' },
+    })
+
   it('host inicia a partida e a rodada; nao host recebe 403', async () => {
     const { host, outro, versao } = await salaComDois()
-    const r1 = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao, acao: { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } } }),
-      headers: { ...auth(host.id, host.token), 'content-type': 'application/json' },
-    })
+    const r1 = await acao(host, versao, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } })
     expect(r1.status).toBe(200)
     const b1 = await r1.json()
-    const r2 = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao: b1.versao, acao: { tipo: 'iniciar_rodada', categoriaId: 'c1' } }),
-      headers: { ...auth(outro.id, outro.token), 'content-type': 'application/json' },
-    })
+    const r2 = await acao(outro, b1.versao, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
     expect(r2.status).toBe(403)
   })
 
   it('versao desatualizada e 409 com a visao atual', async () => {
     const { host, versao } = await salaComDois()
-    const r = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao: versao - 1, acao: { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } } }),
-      headers: { ...auth(host.id, host.token), 'content-type': 'application/json' },
-    })
+    const r = await acao(host, versao - 1, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } })
     expect(r.status).toBe(409)
     const b = await r.json()
     expect(b.erro).toBe('versao_desatualizada')
@@ -1424,25 +1435,15 @@ describe('acoes', () => {
 
   it('acao recusada pela engine e 422 com detalhe', async () => {
     const { host, versao } = await salaComDois()
-    const r = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao, acao: { tipo: 'iniciar_rodada', categoriaId: 'c1' } }),
-      headers: { ...auth(host.id, host.token), 'content-type': 'application/json' },
-    })
+    const r = await acao(host, versao, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
     expect(r.status).toBe(422)
     expect((await r.json()).detalhe).toBe('acao_invalida')
   })
 
   it('a resposta de uma rodada em curso nunca contem itens', async () => {
     const { host, versao } = await salaComDois()
-    const r1 = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao, acao: { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } } }),
-      headers: { ...auth(host.id, host.token), 'content-type': 'application/json' },
-    })
-    const b1 = await r1.json()
-    const r2 = await req('POST', '/api/salas/ABCDE/acoes', {
-      ...json({ versao: b1.versao, acao: { tipo: 'iniciar_rodada', categoriaId: 'c1' } }),
-      headers: { ...auth(host.id, host.token), 'content-type': 'application/json' },
-    })
+    const b1 = await (await acao(host, versao, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } })).json()
+    const r2 = await acao(host, b1.versao, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
     const texto = await r2.text()
     expect(texto).toContain('Cat c1')
     for (const n of 'ABCDEFGHIJ') expect(texto).not.toContain(`${n}c1`)
@@ -1466,12 +1467,67 @@ describe('rotas desconhecidas', () => {
 })
 ```
 
-- [ ] **Step 3: Rodar e confirmar que falha**
+- [ ] **Step 3: Teste falhando do store em arquivo** — `src/servidor/store-arquivo.test.ts`:
 
-Run: `npm test -- servidor/http`
+```ts
+import { describe, it, expect } from 'vitest'
+import { mkdtemp, readFile } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import { join } from 'node:path'
+import { storeArquivo } from './store-arquivo'
+import type { Sala } from './tipos'
+
+const sala = (versao: number): Sala => ({
+  codigo: 'ABCDE', hostId: 'h', jogadores: [], jogo: null, versao, criadaEm: 0, atualizadaEm: 0,
+})
+
+async function caminhoTemp() {
+  return join(await mkdtemp(join(tmpdir(), 'top10-')), 'salas.json')
+}
+
+describe('storeArquivo', () => {
+  it('comeca vazio quando o arquivo nao existe', async () => {
+    const s = await storeArquivo(await caminhoTemp())
+    expect(await s.obter('ABCDE')).toBeNull()
+  })
+
+  it('faz CAS como o store em memoria', async () => {
+    const s = await storeArquivo(await caminhoTemp())
+    expect(await s.gravarSe(sala(1), 0)).toBe(true)
+    expect(await s.gravarSe(sala(1), 0)).toBe(false)
+    expect(await s.gravarSe(sala(2), 1)).toBe(true)
+    expect(await s.gravarSe(sala(3), 1)).toBe(false)
+    expect((await s.obter('ABCDE'))?.versao).toBe(2)
+  })
+
+  it('persiste no disco e recarrega numa nova instancia', async () => {
+    const caminho = await caminhoTemp()
+    const s1 = await storeArquivo(caminho)
+    await s1.gravarSe(sala(1), 0)
+    await s1.gravarSe(sala(2), 1)
+    await s1.aguardarGravacao()
+    expect(JSON.parse(await readFile(caminho, 'utf8')).ABCDE.versao).toBe(2)
+    const s2 = await storeArquivo(caminho)
+    expect((await s2.obter('ABCDE'))?.versao).toBe(2)
+  })
+
+  it('arquivo corrompido nao derruba o servidor: comeca vazio', async () => {
+    const caminho = await caminhoTemp()
+    const { writeFile, mkdir } = await import('node:fs/promises')
+    await mkdir(join(caminho, '..'), { recursive: true })
+    await writeFile(caminho, '{nao json')
+    const s = await storeArquivo(caminho)
+    expect(await s.obter('ABCDE')).toBeNull()
+  })
+})
+```
+
+- [ ] **Step 4: Rodar e confirmar que falha**
+
+Run: `npm test -- servidor`
 Expected: FAIL.
 
-- [ ] **Step 4: Implementar `src/servidor/http.ts`**
+- [ ] **Step 5: Implementar `src/servidor/http.ts`**
 
 ```ts
 import { carregarCategorias } from '../data/carregar'
@@ -1479,7 +1535,7 @@ import type { Categoria, ModoDuracao } from '../engine/types'
 import { codigoValido, gerarCodigo } from './codigo'
 import { aplicarAcaoNaSala, autenticar, criarSala, entrarNaSala, lerSala, montarVisao } from './sala'
 import type { StoreSala } from './store'
-import type { AcaoSala, ErroServidor, Geradores, Sala } from './tipos'
+import { TTL_SALA_MS, type AcaoSala, type ErroServidor, type Geradores, type Sala } from './tipos'
 
 export type DependenciasHttp = {
   store: StoreSala
@@ -1587,6 +1643,9 @@ async function carregarSala(deps: DependenciasHttp, codigo: string): Promise<Sal
   const r = await comStore(() => deps.store.obter(codigo))
   if (r instanceof Response) return r
   if (r === null) return erro('sala_inexistente')
+  // TTL: sala parada ha mais de 6 h e tratada como inexistente. Fica no roteador
+  // para valer igual em qualquer store.
+  if (deps.agora() - r.atualizadaEm > TTL_SALA_MS) return erro('sala_inexistente')
   return r
 }
 
@@ -1697,201 +1756,190 @@ export async function roteador(request: Request, deps: DependenciasHttp): Promis
 }
 ```
 
-- [ ] **Step 5: Adaptador Supabase — `src/servidor/store-supabase.ts` e `supabase/schema.sql`**
-
-Tabela (crie `supabase/schema.sql`; o dono do projeto roda no SQL Editor do Supabase — ver Task 10):
-
-```sql
--- Estado das salas do Top 10 com Blefe. Uma linha por sala; `dados` e a Sala
--- inteira em JSON, `versao` e a copia do campo usada no compare-and-set.
-create table if not exists public.salas (
-  codigo         text primary key,
-  versao         integer not null,
-  dados          jsonb not null,
-  atualizada_em  timestamptz not null default now()
-);
-
--- Ninguem alem do servidor (service role) le ou escreve esta tabela.
-alter table public.salas enable row level security;
-
-create index if not exists salas_atualizada_em on public.salas (atualizada_em);
-```
-
-Adaptador:
+- [ ] **Step 6: Implementar `src/servidor/store-arquivo.ts`**
 
 ```ts
-import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
+import { dirname } from 'node:path'
 import type { StoreSala } from './store'
-import { TTL_SALA_MS, type Sala } from './tipos'
-
-type Linha = { codigo: string; versao: number; dados: Sala; atualizada_em: string }
+import type { Sala } from './tipos'
 
 /**
- * Store em Postgres via Supabase. O compare-and-set e um UPDATE condicionado
- * a `versao = esperada`; a criacao e um INSERT que falha por chave duplicada.
- * O cliente usa a service role key e roda SO no servidor — nunca no browser.
+ * Memoria como fonte da verdade, com snapshot em disco depois de cada
+ * gravacao bem-sucedida — para uma partida sobreviver a um restart do
+ * processo. A escrita e atomica (arquivo temporario + rename) e serializada:
+ * nunca ha duas escritas em voo, e uma gravacao que chega durante outra so
+ * agenda mais uma no fim.
  */
-export function storeSupabase(
-  cliente: SupabaseClient = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!, {
-    auth: { persistSession: false },
-  }),
-  agora: () => number = () => Date.now(),
-): StoreSala {
+export async function storeArquivo(caminho: string): Promise<StoreSala & { aguardarGravacao(): Promise<void> }> {
+  const salas = new Map<string, Sala>()
+  try {
+    const bruto = JSON.parse(await readFile(caminho, 'utf8')) as Record<string, Sala>
+    for (const [codigo, sala] of Object.entries(bruto)) salas.set(codigo, sala)
+  } catch {
+    // arquivo inexistente ou corrompido: comeca vazio
+  }
+
+  let escrevendo: Promise<void> = Promise.resolve()
+  let pendente = false
+
+  const escrever = async () => {
+    await mkdir(dirname(caminho), { recursive: true })
+    const temp = `${caminho}.tmp`
+    await writeFile(temp, JSON.stringify(Object.fromEntries(salas)))
+    await rename(temp, caminho)
+  }
+
+  const agendarEscrita = () => {
+    if (pendente) return
+    pendente = true
+    escrevendo = escrevendo.then(async () => {
+      pendente = false
+      try {
+        await escrever()
+      } catch (e) {
+        console.error('[store-arquivo] falha ao gravar snapshot:', e)
+      }
+    })
+  }
+
   return {
     async obter(codigo) {
-      const { data, error } = await cliente.from('salas').select('dados, atualizada_em').eq('codigo', codigo).maybeSingle<Linha>()
-      if (error) throw error
-      if (!data) return null
-      // TTL: uma sala parada ha mais de 6 h e tratada como inexistente e apagada.
-      if (agora() - new Date(data.atualizada_em).getTime() > TTL_SALA_MS) {
-        await cliente.from('salas').delete().eq('codigo', codigo)
-        return null
-      }
-      return data.dados
+      const s = salas.get(codigo)
+      return s === undefined ? null : structuredClone(s)
     },
     async gravarSe(sala, versaoEsperada) {
-      if (versaoEsperada === 0) {
-        const { error } = await cliente
-          .from('salas')
-          .insert({ codigo: sala.codigo, versao: sala.versao, dados: sala, atualizada_em: new Date(agora()).toISOString() })
-        if (error && error.code === '23505') return false // ja existe
-        if (error) throw error
-        return true
-      }
-      const { data, error } = await cliente
-        .from('salas')
-        .update({ versao: sala.versao, dados: sala, atualizada_em: new Date(agora()).toISOString() })
-        .eq('codigo', sala.codigo)
-        .eq('versao', versaoEsperada)
-        .select('codigo')
-      if (error) throw error
-      return (data?.length ?? 0) === 1
+      const atual = salas.get(sala.codigo)
+      const versaoAtual = atual === undefined ? 0 : atual.versao
+      if (versaoAtual !== versaoEsperada) return false
+      salas.set(sala.codigo, structuredClone(sala))
+      agendarEscrita()
+      return true
     },
+    aguardarGravacao: () => escrevendo,
   }
 }
 ```
 
-Não há teste unitário do adaptador (exigiria um Postgres); a interface `StoreSala` está coberta por `storeMemoria`, e o roteiro da Task 10 inclui uma verificação manual contra o Supabase real.
+- [ ] **Step 7: `src/servidor/node-web.ts` e `src/servidor/vite-plugin-api.ts`**
 
-- [ ] **Step 6: Função Vercel — `api/[[...rota]].ts`**
-
-```ts
-import { dependenciasPadrao, roteador } from '../src/servidor/http'
-import { storeMemoria } from '../src/servidor/store'
-import { storeSupabase } from '../src/servidor/store-supabase'
-
-// Em producao, SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY vem das variaveis do
-// projeto na Vercel. Sem elas (ou com STORE=memoria), cai no store em memoria —
-// que so serve para uma unica instancia e some a cada cold start.
-const store =
-  process.env.STORE === 'memoria' || !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY
-    ? storeMemoria()
-    : storeSupabase()
-const deps = dependenciasPadrao(store)
-
-export async function GET(request: Request): Promise<Response> {
-  return roteador(request, deps)
-}
-export async function POST(request: Request): Promise<Response> {
-  return roteador(request, deps)
-}
-```
-
-- [ ] **Step 7: Plugin de dev — `src/servidor/vite-plugin-api.ts`**
+`node-web.ts` — o adaptador Node ↔ Web usado tanto pelo Vite quanto pelo servidor de produção:
 
 ```ts
 import type { IncomingMessage, ServerResponse } from 'node:http'
-import type { Plugin } from 'vite'
-import { dependenciasPadrao, roteador } from './http'
-import { storeMemoria } from './store'
-import { storeSupabase } from './store-supabase'
 
-async function paraRequest(req: IncomingMessage): Promise<Request> {
-  const url = `http://localhost${req.url ?? '/'}`
+export async function paraRequest(req: IncomingMessage, origem = 'http://localhost'): Promise<Request> {
   const headers = new Headers()
   for (const [k, v] of Object.entries(req.headers)) if (typeof v === 'string') headers.set(k, v)
   const pedacos: Buffer[] = []
   for await (const p of req) pedacos.push(p as Buffer)
   const body = pedacos.length > 0 ? Buffer.concat(pedacos) : undefined
-  return new Request(url, { method: req.method, headers, body: body && body.length > 0 ? body : undefined })
+  return new Request(origem + (req.url ?? '/'), {
+    method: req.method,
+    headers,
+    body: body && body.length > 0 ? body : undefined,
+  })
 }
 
-async function escrever(res: ServerResponse, resp: Response): Promise<void> {
+export async function escreverResponse(res: ServerResponse, resp: Response): Promise<void> {
   res.statusCode = resp.status
   resp.headers.forEach((v, k) => res.setHeader(k, v))
   res.end(resp.status === 204 ? undefined : await resp.text())
 }
+```
 
-/**
- * Monta as rotas /api no servidor de desenvolvimento do Vite. Por padrao usa o
- * store em memoria; com STORE=supabase e as variaveis SUPABASE_URL e
- * SUPABASE_SERVICE_ROLE_KEY no ambiente (ex.: .env.local), usa o Supabase real.
- */
+`vite-plugin-api.ts`:
+
+```ts
+import type { Plugin } from 'vite'
+import { dependenciasPadrao, roteador } from './http'
+import { escreverResponse, paraRequest } from './node-web'
+import { storeMemoria } from './store'
+
+/** Monta as rotas /api no servidor de desenvolvimento do Vite, com store em memoria. */
 export function pluginApi(): Plugin {
-  const usarSupabase =
-    process.env.STORE === 'supabase' && process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY
-  const deps = dependenciasPadrao(usarSupabase ? storeSupabase() : storeMemoria())
+  const deps = dependenciasPadrao(storeMemoria())
   return {
     name: 'top10-api',
     configureServer(server) {
       server.middlewares.use('/api', async (req, res) => {
         req.url = '/api' + (req.url ?? '')
-        await escrever(res, await roteador(await paraRequest(req), deps))
+        await escreverResponse(res, await roteador(await paraRequest(req), deps))
       })
     },
   }
 }
 ```
 
-Em `vite.config.ts`:
+Em `vite.config.ts`: `import { pluginApi } from './src/servidor/vite-plugin-api'` e `plugins: [react(), pluginApi()]`. Como `vite.config.ts` é compilado pelo `tsconfig.node.json`, acrescente `"src/servidor/**/*.ts"` ao `include` dele se o build reclamar.
+
+- [ ] **Step 8: `servidor.ts` na raiz do repositório — o processo de produção**
 
 ```ts
-/// <reference types="vitest" />
-import { defineConfig, loadEnv } from 'vite'
-import react from '@vitejs/plugin-react'
-import { pluginApi } from './src/servidor/vite-plugin-api'
+import { createServer } from 'node:http'
+import { createReadStream, existsSync, statSync } from 'node:fs'
+import { extname, join, normalize, resolve } from 'node:path'
+import { dependenciasPadrao, roteador } from './src/servidor/http'
+import { escreverResponse, paraRequest } from './src/servidor/node-web'
+import { storeArquivo } from './src/servidor/store-arquivo'
 
-export default defineConfig(({ mode }) => {
-  // Deixa SUPABASE_* e STORE de .env.local visiveis ao plugin de dev (sem prefixo VITE_,
-  // nada disso chega ao bundle do cliente).
-  Object.assign(process.env, loadEnv(mode, process.cwd(), ''))
-  return {
-    plugins: [react(), pluginApi()],
-    test: {
-      environment: 'jsdom',
-      globals: true,
-      setupFiles: ['./src/setup-testes.ts'],
-    },
-  }
-})
-``` Como `vite.config.ts` é compilado pelo `tsconfig.node.json`, acrescente `"src/servidor/**/*.ts"` ao `include` dele se o build reclamar; e acrescente `"api"` ao `include` do `tsconfig.json`.
+const PORTA = Number(process.env.PORTA ?? 3000)
+const DIST = resolve(process.env.DIST ?? 'dist')
+const DADOS = resolve(process.env.DADOS ?? 'dados/salas.json')
 
-- [ ] **Step 8: `vercel.json` e `.gitignore`**
-
-```json
-{
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }]
+const TIPOS: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.json': 'application/json',
+  '.woff2': 'font/woff2',
 }
+
+const store = await storeArquivo(DADOS)
+const deps = dependenciasPadrao(store)
+
+const servidor = createServer(async (req, res) => {
+  const url = req.url ?? '/'
+  if (url.startsWith('/api/')) {
+    await escreverResponse(res, await roteador(await paraRequest(req), deps))
+    return
+  }
+
+  // Estatico com fallback SPA: qualquer caminho sem arquivo cai no index.html.
+  const caminho = normalize(join(DIST, url.split('?')[0]))
+  const arquivo = caminho.startsWith(DIST) && existsSync(caminho) && statSync(caminho).isFile() ? caminho : join(DIST, 'index.html')
+  res.setHeader('content-type', TIPOS[extname(arquivo)] ?? 'application/octet-stream')
+  if (arquivo !== join(DIST, 'index.html')) res.setHeader('cache-control', 'public, max-age=31536000, immutable')
+  createReadStream(arquivo).pipe(res)
+})
+
+servidor.listen(PORTA, () => {
+  console.log(`Top 10 com Blefe em http://localhost:${PORTA} (salas em ${DADOS})`)
+})
 ```
 
-Acrescentar `.env.local` e `.env*.local` ao `.gitignore` — a service role key nunca pode ser commitada. O Vite carrega `.env.local` automaticamente no `npm run dev`, mas só expõe ao `process.env` do plugin as variáveis sem prefixo `VITE_` via `loadEnv`; no `vite.config.ts`, chame `Object.assign(process.env, loadEnv(mode, process.cwd(), ''))` dentro de `defineConfig(({ mode }) => ...)` antes de instanciar `pluginApi()`.
+`package.json`: `"start": "tsx servidor.ts"`. `tsconfig.json`: acrescentar `"servidor.ts"` ao `include`. `.gitignore`: `dados/`.
 
-- [ ] **Step 9: Rodar e confirmar que passa; suíte inteira; build; dev**
+- [ ] **Step 9: Rodar e confirmar que passa; suíte inteira; build; smoke do servidor**
 
 Run: `npm test && npm run build`
 Expected: PASS, build limpo.
 
-Run: `npm run dev` e, noutro terminal:
+Run: `npm start` e, noutro terminal:
 ```bash
-curl -s -X POST localhost:5173/api/salas -H 'content-type: application/json' -d '{"apelido":"Ana"}'
+curl -s -X POST localhost:3000/api/salas -H 'content-type: application/json' -d '{"apelido":"Ana"}'
+curl -s -o /dev/null -w '%{http_code}\n' localhost:3000/sala/ABCDE
 ```
-Expected: JSON com `codigo`, `jogadorId`, `token`, `visao`. Encerre o dev server.
+Expected: JSON com `codigo`/`token`/`visao`; depois `200` (o index.html do SPA). Confira que `dados/salas.json` foi criado. Encerre o servidor.
 
 - [ ] **Step 10: Commit**
 
 ```bash
 git add -A
-git commit -m "feat(servidor): roteador http, funcao vercel, plugin de dev e store supabase
+git commit -m "feat(servidor): roteador http, servidor node com estatico, plugin de dev e store em arquivo
 
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
@@ -3181,7 +3229,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ### Task 10: Ponta a ponta local, README e roteiro de provisionamento
 
 **Files:**
-- Create: `src/servidor/ponta-a-ponta.test.ts`, `docs/deploy-vercel.md`
+- Create: `src/servidor/ponta-a-ponta.test.ts`, `docs/deploy-vps.md`
 - Modify: `README.md`
 
 **Interfaces:** nenhuma nova.
@@ -3285,62 +3333,66 @@ describe('partida completa com dois aparelhos', () => {
 Run: `npm test -- ponta-a-ponta`
 Expected: PASS. Se falhar, o defeito está numa task anterior: corrija-o lá com um teste unitário, não aqui.
 
-- [ ] **Step 3: `docs/deploy-vercel.md`** — o roteiro que o dono do projeto executa, em português:
+- [ ] **Step 3: `docs/deploy-vps.md`** — o roteiro que o dono do projeto executa na VPS (Ubuntu/Debian), em português:
 
 ```markdown
-# Publicar na Vercel com Supabase
+# Publicar numa VPS
 
-Passos que exigem a sua conta. Execute na ordem.
+Um único processo Node serve o site e a API. As salas ficam em memória com snapshot em
+`dados/salas.json`, então um restart não perde partidas em andamento.
 
-## 1. Tabela no Supabase
+## 1. Na VPS, uma vez
 
-No projeto Supabase que você quer usar, abra o SQL Editor e execute o conteúdo de
-`supabase/schema.sql`. Isso cria a tabela `salas` com RLS ligado — só a service role
-(o servidor) lê e escreve nela.
+sudo apt update && sudo apt install -y git curl
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt install -y nodejs
+sudo npm i -g pm2
 
-Anote, em Project Settings → API:
-- Project URL → vai virar `SUPABASE_URL`
-- service_role key (secret) → vai virar `SUPABASE_SERVICE_ROLE_KEY`
+## 2. Código
 
-A service role key ignora RLS e nunca pode ir para o browser. Aqui ela só existe nas
-variáveis da função Vercel.
+git clone <url-do-repositorio> top10 && cd top10
+npm ci
+npm run build
 
-## 2. Vercel
+## 3. Rodar e manter de pé
 
-npm i -g vercel
-vercel login
-vercel link                     # na raiz do repositório
+PORTA=3000 pm2 start npm --name top10 -- start
+pm2 save
+pm2 startup        # imprime um comando; execute-o para subir junto com a máquina
 
-Se o seu Supabase já está integrado à Vercel pelo Marketplace, as variáveis acima já
-existem no projeto — pule para o passo 3. Senão, cadastre-as:
+Logs: `pm2 logs top10`. Restart: `pm2 restart top10`.
 
-vercel env add SUPABASE_URL production
-vercel env add SUPABASE_SERVICE_ROLE_KEY production
+## 4. HTTPS com Caddy (recomendado)
 
-(repita com `preview` se quiser previews jogáveis).
+sudo apt install -y caddy
+Em /etc/caddy/Caddyfile:
 
-## 3. Deploy
+    seu-dominio.com.br {
+        reverse_proxy localhost:3000
+    }
 
-vercel            # preview
-vercel --prod     # produção
+sudo systemctl reload caddy
 
-## Desenvolvimento local
+Caddy obtém e renova o certificado sozinho. Aponte o DNS do domínio para o IP da VPS
+antes de recarregar. Libere as portas 80 e 443 no firewall (`sudo ufw allow 80,443/tcp`).
 
-Sem variáveis, `npm run dev` usa o store em memória — suficiente para testar sozinho
-com duas abas. Para testar contra o Supabase real, crie `.env.local` com as duas
-variáveis (o arquivo já está no .gitignore) e rode `STORE=supabase npm run dev`.
+## 5. Atualizar
 
-Sem as variáveis em produção, a função cai no store em memória: funciona numa
-instância só e perde as salas a cada cold start — inútil para jogar de verdade.
+cd top10 && git pull && npm ci && npm run build && pm2 restart top10
 
-## Verificação manual contra o Supabase real (uma vez)
+## Variáveis
 
-Com as variáveis configuradas, crie uma sala pelo app e confirme no Table Editor do
-Supabase que apareceu uma linha em `salas` com o código; jogue uma rodada e veja
-`versao` subir. É a única verificação do adaptador — não há teste automatizado dele.
+- `PORTA` (padrão 3000)
+- `DADOS` (padrão `dados/salas.json`) — caminho do snapshot das salas
+- `DIST` (padrão `dist`)
+
+## O que não há
+
+Sem banco, sem serviço externo. Salas expiram 6 h após a última atividade. Se a máquina
+reiniciar, `pm2 startup` sobe o processo e o snapshot restaura as salas.
 ```
 
-- [ ] **Step 4: README** — acrescentar uma seção "Jogar online" com: o que muda (cada um no próprio aparelho), como criar/entrar numa sala, que o anfitrião escolhe categoria e inicia, que o próximo palpite fecha a janela de dúvida (não há "ninguém duvidou" online), que quem chega atrasado entra na próxima rodada, e um link para `docs/deploy-vercel.md`. Atualizar a seção de arquitetura para incluir `src/servidor/` e `api/`.
+- [ ] **Step 4: README** — acrescentar uma seção "Jogar online" com: o que muda (cada um no próprio aparelho), como criar/entrar numa sala, que o anfitrião escolhe categoria e inicia, que o próximo palpite fecha a janela de dúvida (não há "ninguém duvidou" online), que quem chega atrasado entra na próxima rodada, e um link para `docs/deploy-vps.md`. Atualizar a seção de arquitetura para incluir `src/servidor/` e `servidor.ts`, e a seção de como rodar com `npm start` (produção) além de `npm run dev`.
 
 - [ ] **Step 5: Suíte inteira e build**
 
@@ -3361,7 +3413,7 @@ Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ## Verificação final
 
 - [ ] `npm test` verde; `npm run build` limpo.
-- [ ] `grep -rn "Date.now\|localStorage\|document\.\|window\.\|from 'react" src/engine src/servidor --include=*.ts | grep -v test | grep -v vite-plugin-api | grep -v store-supabase | grep -v "http.ts"` não devolve nada. (`http.ts` só usa `Date.now` dentro de `dependenciasPadrao`; `vite-plugin-api.ts` e `store-supabase.ts` são adaptadores.)
+- [ ] `grep -rn "Date.now\|localStorage\|document\.\|window\.\|from 'react" src/engine src/servidor --include=*.ts | grep -v test | grep -v vite-plugin-api | grep -v store-arquivo | grep -v node-web | grep -v "http.ts"` não devolve nada. (`http.ts` só usa `Date.now` dentro de `dependenciasPadrao`; `vite-plugin-api.ts`, `node-web.ts` e `store-arquivo.ts` são adaptadores.)
 - [ ] `grep -rn "data/" src/ui` não devolve nada além de `App.tsx` (modo mesa).
 - [ ] O teste de sigilo em `visao.test.ts` e o de `http.test.ts` ("nunca contém itens") estão presentes e inalterados.
 - [ ] Modo de um dispositivo (`/`) joga uma partida completa como antes.

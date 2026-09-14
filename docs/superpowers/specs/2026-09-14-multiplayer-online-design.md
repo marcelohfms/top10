@@ -15,9 +15,9 @@ O jogo de um dispositivo continua existindo e funcionando como hoje.
 | Decisão | Escolha |
 |---|---|
 | Alcance | Internet, qualquer lugar |
-| Hospedagem | Vercel: front Vite + funções em `api/` no mesmo deploy |
+| Hospedagem | VPS (Hostinger): um único processo Node (`servidor.ts`) serve o `dist/` e a API, mantido por `pm2`, HTTPS via Caddy |
 | Transporte | HTTP + polling de 1 s. Sem WebSocket |
-| Estado da sala | Tabela `salas` num Postgres do Supabase (projeto já existente do dono), com compare-and-set por `UPDATE … WHERE versao = esperada`. Acesso só pelo servidor, com a service role key |
+| Estado da sala | Em memória no processo, com snapshot em `dados/salas.json` após cada gravação (sobrevive a restart). Sem banco, sem serviço externo |
 | Entrada | Código de sala + apelido, sem conta |
 | Autoridade | Servidor. Roda a mesma engine; o cliente só renderiza e envia ações |
 | Sigilo | A lista de itens nunca sai do servidor durante a rodada |
@@ -26,14 +26,14 @@ O jogo de um dispositivo continua existindo e funcionando como hoje.
 ## 3. Topologia
 
 ```
-celulares ──HTTP──▶ api/ (funções Vercel) ──▶ Supabase Postgres, tabela `salas` (CAS)
+celulares ──HTTP──▶ servidor.ts (Node, um processo) ──▶ memória + snapshot em dados/salas.json
                         │
                         └─ src/engine (a mesma de hoje)
 ```
 
 O catálogo (`src/data/categorias.json`) passa a ser carregado **apenas** pelo servidor. O
-bundle do cliente não o inclui mais. Em desenvolvimento, `STORE=memoria` usa um adaptador em
-memória e dispensa provisionar qualquer serviço.
+bundle do cliente não o inclui mais. Em desenvolvimento, o plugin do Vite monta `/api` com o
+store em memória; nada precisa ser provisionado.
 
 ## 4. Modelo da sala
 
@@ -64,7 +64,7 @@ Apelidos são únicos por sala (comparação após `normalizar`). Tentativa de r
 
 ## 5. Rotas
 
-Todas em `api/`, respondendo JSON. Erros seguem `{ erro: string, mensagem: string }`.
+Todas sob `/api`, servidas por `servidor.ts` (produção) e pelo plugin do Vite (dev), respondendo JSON. Erros seguem `{ erro: string, mensagem: string }`.
 
 | Método e rota | Auth | Corpo | Resposta |
 |---|---|---|---|
@@ -154,15 +154,16 @@ curso e afirmar que **nenhum** `itens[n].nome` ou apelido aparece na string.
 
 ## 7. Servidor
 
-`api/` contém apenas os adaptadores HTTP. A lógica fica em `src/servidor/`, puro e testável:
+`servidor.ts` e os adaptadores Node↔Web são a única camada com I/O. A lógica fica em `src/servidor/`, pura e testável:
 
 - `src/servidor/sala.ts` — `criarSala`, `entrarNaSala`, `aplicarAcaoNaSala`, `lerSala`:
   funções `(sala, entrada, agora) → { sala, resposta }` sem I/O.
 - `src/servidor/autorizacao.ts` — `podeExecutar(sala, jogadorId, acao, agora)`.
 - `src/servidor/codigo.ts` — geração de código de sala (5 letras, sem `I`, `O`, `0`, `1`).
 - `src/servidor/store.ts` — interface `StoreSala { obter(codigo); gravarSe(sala, versaoEsperada); }`
-  com `storeMemoria` (testes e dev) e `store-supabase.ts` (produção). TTL de 6 h aplicado na leitura: linha mais velha que isso é apagada e tratada como inexistente.
-- `api/salas/...` — lê request, chama o store, chama a função pura, escreve response.
+  com `storeMemoria` (testes e dev) e `store-arquivo.ts` (produção: memória + snapshot). TTL de 6 h aplicado no roteador: sala com `atualizadaEm` mais velha que isso é tratada como inexistente.
+- `src/servidor/http.ts` — roteador `(Request, deps) → Response`: lê request, chama o store, chama a função pura, escreve response.
+- `servidor.ts` — `http.createServer`: estático com fallback SPA + `/api` → roteador.
 
 Fluxo de uma ação:
 
