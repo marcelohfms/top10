@@ -61,8 +61,9 @@ celular. O que muda:
 - Quem chega atrasado (a partida já começou) entra na sala e passa a jogar a
   partir da **próxima rodada**.
 - As credenciais ficam no `localStorage` do aparelho; reabrir o link volta
-  para a sala sem digitar nada. A lista secreta nunca sai do servidor até a
-  revelação.
+  para a sala sem digitar nada. O servidor nunca envia a lista da rodada em
+  curso a nenhum cliente até a revelação (o catálogo inteiro continua no
+  bundle por causa do modo num aparelho só).
 - A sala expira 6 h depois da última atividade.
 
 Para publicar numa VPS própria, siga [docs/deploy-vps.md](docs/deploy-vps.md).

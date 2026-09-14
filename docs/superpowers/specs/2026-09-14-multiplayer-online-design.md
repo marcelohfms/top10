@@ -31,9 +31,11 @@ celulares ──HTTP──▶ servidor.ts (Node, um processo) ──▶ memória
                         └─ src/engine (a mesma de hoje)
 ```
 
-O catálogo (`src/data/categorias.json`) passa a ser carregado **apenas** pelo servidor. O
-bundle do cliente não o inclui mais. Em desenvolvimento, o plugin do Vite monta `/api` com o
-store em memória; nada precisa ser provisionado.
+No modo online, o catálogo (`src/data/categorias.json`) é carregado pelo servidor, e o
+servidor **nunca envia** a lista da rodada em curso a cliente algum — esse é o invariante.
+O catálogo continua no bundle do cliente por causa do modo num aparelho só (é dado público,
+está no repositório). Em desenvolvimento, o plugin do Vite monta `/api` com o store em
+memória; nada precisa ser provisionado.
 
 ## 4. Modelo da sala
 
