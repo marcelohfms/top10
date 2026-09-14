@@ -16,5 +16,6 @@
 
     "strict": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "src/servidor/**/*.ts", "src/engine/**/*.ts", "src/data/**/*.ts", "src/data/**/*.json"],
+  "exclude": ["**/*.test.ts", "**/*.test.tsx"]
 }
