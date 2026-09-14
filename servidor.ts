@@ -75,3 +75,17 @@ const servidor = createServer(async (req, res) => {
 servidor.listen(PORTA, () => {
   console.log(`Top 10 com Blefe em http://localhost:${PORTA} (salas em ${DADOS})`)
 })
+
+// Encerramento: para de aceitar conexoes, espera o snapshot em voo terminar
+// e sai com 0. Sem isso um deploy (pm2 restart) podia perder a ultima gravacao.
+let encerrando = false
+const encerrar = (sinal: string) => {
+  if (encerrando) return
+  encerrando = true
+  console.log(`[servidor] ${sinal} recebido, encerrando`)
+  servidor.close()
+  servidor.closeAllConnections()
+  void store.aguardarGravacao().finally(() => process.exit(0))
+}
+process.on('SIGINT', () => encerrar('SIGINT'))
+process.on('SIGTERM', () => encerrar('SIGTERM'))
