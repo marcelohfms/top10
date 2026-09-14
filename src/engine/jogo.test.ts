@@ -228,3 +228,41 @@ describe('fim por falta de categorias', () => {
     expect(e.fase).toBe('fim_jogo')
   })
 })
+
+describe('adicionar_jogador', () => {
+  const base = () =>
+    aplicar(criarJogo(catalogo), T0, {
+      tipo: 'configurar',
+      jogadores,
+      modo: { tipo: 'categorias', quantidade: 3 },
+    })
+
+  it('entra entre rodadas com zero pontos', () => {
+    const e = aplicar(base(), T0, { tipo: 'adicionar_jogador', jogador: { id: 'c', nome: 'Carla' } })
+    expect(e.jogadores.map((j) => j.id)).toEqual(['a', 'b', 'c'])
+    expect(e.placar.c).toBe(0)
+  })
+
+  it('entra na revelacao e participa da proxima rodada', () => {
+    let e = rodadaCompleta(base(), T0, 'c1')
+    e = aplicar(e, T0, { tipo: 'adicionar_jogador', jogador: { id: 'c', nome: 'Carla' } })
+    e = aplicar(e, T0, { tipo: 'avancar' }, { tipo: 'iniciar_rodada', categoriaId: 'c2' })
+    expect(e.rodada?.ordem).toEqual(['a', 'b', 'c'])
+  })
+
+  it('e rejeitado no meio de uma rodada', () => {
+    const e = aplicar(base(), T0, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
+    const r = aplicarAcaoJogo(e, { tipo: 'adicionar_jogador', jogador: { id: 'c', nome: 'Carla' } }, T0)
+    expect(r.ok).toBe(false)
+  })
+
+  it('rejeita id repetido', () => {
+    const r = aplicarAcaoJogo(base(), { tipo: 'adicionar_jogador', jogador: { id: 'a', nome: 'Outra' } }, T0)
+    expect(r.ok).toBe(false)
+  })
+
+  it('rejeita antes de configurar e depois do fim', () => {
+    const r1 = aplicarAcaoJogo(criarJogo(catalogo), { tipo: 'adicionar_jogador', jogador: { id: 'c', nome: 'C' } }, T0)
+    expect(r1.ok).toBe(false)
+  })
+})

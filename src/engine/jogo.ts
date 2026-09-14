@@ -183,5 +183,22 @@ export function aplicarAcaoJogo(
         },
       }
     }
+
+    case 'adicionar_jogador': {
+      const entreRodadas =
+        (estado.fase === 'em_rodada' && estado.rodada === null) || estado.fase === 'revelacao'
+      if (!entreRodadas) return { ok: false, erro: 'acao_invalida', estado }
+      if (estado.jogadores.some((j) => j.id === acao.jogador.id)) {
+        return { ok: false, erro: 'acao_invalida', estado }
+      }
+      return {
+        ok: true,
+        estado: {
+          ...estado,
+          jogadores: [...estado.jogadores, acao.jogador],
+          placar: { ...estado.placar, [acao.jogador.id]: 0 },
+        },
+      }
+    }
   }
 }

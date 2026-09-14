@@ -92,6 +92,7 @@ export type AcaoJogo =
   | { tipo: 'tick' }
   | { tipo: 'decidir_expiracao'; decisao: 'encerrar' | 'terminar_categoria' }
   | { tipo: 'avancar' }
+  | { tipo: 'adicionar_jogador'; jogador: Jogador }
 
 export type ResultadoJogo =
   | { ok: true; estado: EstadoJogo }
