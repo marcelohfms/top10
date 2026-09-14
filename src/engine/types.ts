@@ -38,7 +38,7 @@ export type EstadoRodada = {
 }
 
 export type AcaoRodada =
-  | { tipo: 'palpite'; texto: string }
+  | { tipo: 'palpite'; texto: string; jogadorId: string }
   | { tipo: 'ninguem_duvidou' }
   | { tipo: 'duvidar'; duvidadorId: string }
 
@@ -47,6 +47,7 @@ export type ErroRodada =
   | 'palpite_duplicado'
   | 'fase_invalida'
   | 'duvidador_invalido'
+  | 'jogador_invalido'
 
 export type ResultadoRodada =
   | { ok: true; estado: EstadoRodada }
@@ -95,3 +96,36 @@ export type AcaoJogo =
 export type ResultadoJogo =
   | { ok: true; estado: EstadoJogo }
   | { ok: false; erro: ErroRodada | 'acao_invalida'; estado: EstadoJogo }
+
+/** Categoria como o cliente pode ve-la: `itens` so existe depois da revelacao. */
+export type CategoriaVisivel = {
+  id: string
+  titulo: string
+  fonte: string
+  itens?: ItemCategoria[]
+}
+
+export type RodadaVisivel = Omit<EstadoRodada, 'categoria'> & { categoria: CategoriaVisivel }
+
+/**
+ * Subconjunto de EstadoJogo que as telas leem. EstadoJogo e atribuivel a
+ * EstadoVisivel; a visao publica online tambem. Assim as mesmas telas servem
+ * o modo de um dispositivo e o modo online.
+ */
+export type EstadoVisivel = {
+  fase: FaseJogo
+  jogadores: Jogador[]
+  placar: Record<string, number>
+  relogio: EstadoRelogio
+  rodada: RodadaVisivel | null
+  concluidas: RodadaConcluida[]
+  encerrarAposRodada: boolean
+}
+
+export type PodeAgir = { palpite: boolean; duvidar: boolean; host: boolean }
+
+export type VisaoJogo = EstadoVisivel & {
+  jogadorId: string
+  categoriasDisponiveis: { id: string; titulo: string }[]
+  podeAgir: PodeAgir
+}

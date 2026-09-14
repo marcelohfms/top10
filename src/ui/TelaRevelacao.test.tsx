@@ -29,7 +29,7 @@ describe('TelaRevelacao', () => {
         modo: { tipo: 'categorias', quantidade: 2 },
       },
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: 'a' } },
       { tipo: 'rodada', acao: { tipo: 'duvidar', duvidadorId: 'b' } },
     )
 

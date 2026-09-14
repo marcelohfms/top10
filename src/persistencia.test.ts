@@ -95,7 +95,7 @@ describe('persistencia', () => {
     let estado = partidaConfigurada()
     const passos = [
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Chumbo' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Chumbo', jogadorId: 'a' } },
       { tipo: 'rodada', acao: { tipo: 'duvidar', duvidadorId: 'b' } },
     ] as const
     for (const acao of passos) {

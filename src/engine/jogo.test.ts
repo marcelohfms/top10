@@ -37,7 +37,7 @@ function rodadaCompleta(estado: EstadoJogo, agora: number, categoriaId: string):
     estado,
     agora,
     { tipo: 'iniciar_rodada', categoriaId },
-    { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu' } },
+    { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: 'a' } },
     { tipo: 'rodada', acao: { tipo: 'duvidar', duvidadorId: 'b' } },
   )
 }
@@ -74,7 +74,7 @@ describe('fluxo de rodada', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } },
     )
     expect(e.relogio.iniciadoEm).toBe(T0)
   })
@@ -89,7 +89,7 @@ describe('fluxo de rodada', () => {
 
   it('propaga o erro da rodada sem alterar o estado', () => {
     const e = aplicar(base(), T0, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
-    const r = aplicarAcaoJogo(e, { tipo: 'rodada', acao: { tipo: 'palpite', texto: '' } }, T0)
+    const r = aplicarAcaoJogo(e, { tipo: 'rodada', acao: { tipo: 'palpite', texto: '', jogadorId: 'a' } }, T0)
     expect(r.ok).toBe(false)
     if (!r.ok) expect(r.erro).toBe('palpite_vazio')
     expect(r.estado).toEqual(e)
@@ -125,7 +125,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } },
     )
     e = aplicar(e, T0 + 30 * MIN, { tipo: 'tick' })
     expect(e.fase).toBe('decisao_tempo')
@@ -137,7 +137,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } },
     )
     e = aplicar(e, T0 + 30 * MIN, { tipo: 'tick' })
     e = aplicar(e, T0 + 31 * MIN, { tipo: 'decidir_expiracao', decisao: 'encerrar' })
@@ -153,7 +153,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: 'a' } },
     )
     const rodadaAntes = e.rodada
     e = aplicar(e, T0 + 30 * MIN, { tipo: 'tick' })
@@ -173,7 +173,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: 'a' } },
     )
     e = aplicar(e, T0 + 30 * MIN, { tipo: 'tick' })
     e = aplicar(e, T0 + 31 * MIN, { tipo: 'decidir_expiracao', decisao: 'terminar_categoria' })
@@ -193,7 +193,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } },
     )
     const antes = e
     e = aplicar(e, T0 + 5 * MIN, { tipo: 'tick' })
@@ -205,7 +205,7 @@ describe('encerramento por tempo', () => {
       base(),
       T0,
       { tipo: 'iniciar_rodada', categoriaId: 'c1' },
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Alfa', jogadorId: 'a' } },
     )
     const depois = aplicar(antes, T0 + 5 * MIN, { tipo: 'tick' })
     // Identidade referencial: o React precisa poder cortar o re-render, senao

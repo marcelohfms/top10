@@ -14,6 +14,7 @@ const MENSAGENS: Record<ErroRodada | 'acao_invalida', string> = {
   palpite_duplicado: 'Esse palpite já foi dito nesta rodada. Tente outro.',
   fase_invalida: 'Ação fora de hora.',
   duvidador_invalido: 'Esse jogador não pode duvidar agora.',
+  jogador_invalido: 'Não é a vez desse jogador.',
   acao_invalida: 'Ação inválida.',
 }
 
@@ -38,7 +39,7 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
   }
 
   const enviarPalpite = () => {
-    aoAgir({ tipo: 'palpite', texto })
+    aoAgir({ tipo: 'palpite', texto, jogadorId: rodada.vezDe })
     setTexto('')
   }
 

@@ -68,7 +68,7 @@ describe('TelaRodada — fase de palpite', () => {
     const usuario = userEvent.setup()
     await usuario.type(screen.getByLabelText('Seu palpite'), 'Item 3')
     await usuario.click(screen.getByRole('button', { name: 'Dar palpite' }))
-    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: 'Item 3' })
+    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: 'Item 3', jogadorId: 'a' })
   })
 
   it('exibe aviso de palpite duplicado', () => {
@@ -90,7 +90,7 @@ describe('TelaRodada — fase de palpite', () => {
     )
     const usuario = userEvent.setup()
     await usuario.type(screen.getByLabelText('Seu palpite'), 'Item 3{Enter}')
-    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: 'Item 3' })
+    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: 'Item 3', jogadorId: 'a' })
   })
 
   it('envia o palpite ao pressionar Enter mesmo com o campo vazio', async () => {
@@ -100,7 +100,7 @@ describe('TelaRodada — fase de palpite', () => {
     )
     const usuario = userEvent.setup()
     await usuario.type(screen.getByLabelText('Seu palpite'), '{Enter}')
-    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: '' })
+    expect(aoAgir).toHaveBeenCalledWith({ tipo: 'palpite', texto: '', jogadorId: 'a' })
   })
 
   it('limpa o campo apos enviar com Enter', async () => {
@@ -119,7 +119,7 @@ describe('TelaRodada — janela de duvida', () => {
   function estadoComPalpite(): EstadoJogo {
     const r = aplicarAcaoJogo(
       estadoEmRodada(),
-      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Item 3' } },
+      { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Item 3', jogadorId: 'a' } },
       0,
     )
     if (!r.ok) throw new Error('palpite falhou')

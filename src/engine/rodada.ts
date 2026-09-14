@@ -25,13 +25,23 @@ export function iniciarRodada(categoria: Categoria, jogadores: Jogador[]): Estad
 }
 
 /** Proximo jogador vivo depois da posicao de `refId` na ordem original. */
-function proximoVivoApos(estado: EstadoRodada, refId: string, vivos: string[]): string {
+export function proximoVivoApos(estado: EstadoRodada, refId: string, vivos: string[]): string {
   const inicio = estado.ordem.indexOf(refId)
   for (let passo = 1; passo <= estado.ordem.length; passo++) {
     const candidato = estado.ordem[(inicio + passo) % estado.ordem.length]
     if (vivos.includes(candidato)) return candidato
   }
   return vivos[0]
+}
+
+/** Quem pode dar o proximo palpite agora, ou null se a rodada acabou. */
+export function proximoAPalpitar(rodada: EstadoRodada): string | null {
+  if (rodada.fase === 'palpite') return rodada.vezDe
+  if (rodada.fase === 'janela_duvida') {
+    const ultimo = rodada.palpites[rodada.palpites.length - 1]
+    return proximoVivoApos(rodada, ultimo.autorId, rodada.vivos)
+  }
+  return null
 }
 
 /**
@@ -59,18 +69,27 @@ export function aplicarAcaoRodada(estado: EstadoRodada, acao: AcaoRodada): Resul
   }
 
   if (acao.tipo === 'palpite') {
-    if (estado.fase !== 'palpite') return { ok: false, erro: 'fase_invalida', estado }
+    const esperado = proximoAPalpitar(estado)
+    if (esperado === null) return { ok: false, erro: 'fase_invalida', estado }
+    if (acao.jogadorId !== esperado) return { ok: false, erro: 'jogador_invalido', estado }
     if (normalizar(acao.texto) === '') return { ok: false, erro: 'palpite_vazio', estado }
     if (jaFoiDito(estado, acao.texto)) return { ok: false, erro: 'palpite_duplicado', estado }
+
+    // Na janela de duvida, o palpite do proximo jogador e o "ninguem duvidou":
+    // fecha a janela do palpite anterior e abre a sua.
+    const base =
+      estado.fase === 'janela_duvida'
+        ? { ...estado, fase: 'palpite' as const, vezDe: esperado, ultimoEvento: null }
+        : estado
 
     return {
       ok: true,
       estado: {
-        ...estado,
+        ...base,
         fase: 'janela_duvida',
         palpites: [
-          ...estado.palpites,
-          { texto: acao.texto, autorId: estado.vezDe, resultado: 'pendente' },
+          ...base.palpites,
+          { texto: acao.texto, autorId: base.vezDe, resultado: 'pendente' },
         ],
         ultimoEvento: null,
       },
