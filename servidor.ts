@@ -24,6 +24,16 @@ const TIPOS: Record<string, string> = {
 const store = await storeArquivo(DADOS)
 const deps = dependenciasPadrao(store)
 
+// Varredura de salas expiradas: na subida e a cada 10 min, para memoria e
+// arquivo nao crescerem para sempre. O roteador ja recusa acesso a elas.
+const INTERVALO_VARREDURA_MS = 10 * 60 * 1000
+const varrer = () => {
+  const n = store.removerExpiradas(Date.now())
+  if (n > 0) console.log(`[servidor] ${n} sala(s) expirada(s) removida(s)`)
+}
+varrer()
+setInterval(varrer, INTERVALO_VARREDURA_MS).unref()
+
 async function tratar(req: IncomingMessage, res: ServerResponse): Promise<void> {
   const url = req.url ?? '/'
   if (url.startsWith('/api/')) {
