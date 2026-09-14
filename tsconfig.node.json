@@ -1,3 +1,7 @@
+// Este projeto tambem inclui src/engine e src/data (alem de vite.config.ts e
+// src/servidor) de proposito: aqui a "lib" nao tem DOM, entao qualquer uso de
+// window/document que vazar para dentro da engine quebra o "tsc -b" — e o
+// mesmo limite que ate agora so um grep vigiava, agora garantido em build.
 {
   "compilerOptions": {
     "target": "ES2022",
