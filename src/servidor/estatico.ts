@@ -13,7 +13,12 @@ import { join, normalize, sep } from 'node:path'
 export function resolverArquivoEstatico(dist: string, url: string, existe: (caminho: string) => boolean): string {
   const indice = join(dist, 'index.html')
   const semQuery = url.split('?')[0] ?? '/'
-  const caminho = normalize(join(dist, decodeURIComponentSeguro(semQuery)))
+  const decodificado = decodeURIComponentSeguro(semQuery)
+  // Um null byte no caminho faz `existsSync`/`statSync` do Node lancarem
+  // ERR_INVALID_ARG_VALUE. Trata como "nao e um arquivo real" ANTES de
+  // montar o caminho ou chamar `existe`, sem jamais tocar o filesystem.
+  if (decodificado.includes('\0')) return indice
+  const caminho = normalize(join(dist, decodificado))
   const dentroDeDist = caminho === dist || caminho.startsWith(dist + sep)
   return dentroDeDist && existe(caminho) ? caminho : indice
 }

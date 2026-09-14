@@ -1,4 +1,4 @@
-import { createServer } from 'node:http'
+import { createServer, type IncomingMessage, type ServerResponse } from 'node:http'
 import { createReadStream, existsSync, statSync } from 'node:fs'
 import { extname, join, resolve } from 'node:path'
 import { dependenciasPadrao, roteador } from './src/servidor/http'
@@ -24,7 +24,7 @@ const TIPOS: Record<string, string> = {
 const store = await storeArquivo(DADOS)
 const deps = dependenciasPadrao(store)
 
-const servidor = createServer(async (req, res) => {
+async function tratar(req: IncomingMessage, res: ServerResponse): Promise<void> {
   const url = req.url ?? '/'
   if (url.startsWith('/api/')) {
     await escreverResponse(res, await roteador(await paraRequest(req), deps))
@@ -36,7 +36,30 @@ const servidor = createServer(async (req, res) => {
   const arquivo = resolverArquivoEstatico(DIST, url, existeComoArquivo)
   res.setHeader('content-type', TIPOS[extname(arquivo)] ?? 'application/octet-stream')
   if (arquivo !== join(DIST, 'index.html')) res.setHeader('cache-control', 'public, max-age=31536000, immutable')
-  createReadStream(arquivo).pipe(res)
+  await new Promise<void>((resolvePromise, rejectPromise) => {
+    const leitura = createReadStream(arquivo)
+    leitura.on('error', rejectPromise)
+    res.on('close', resolvePromise)
+    leitura.pipe(res)
+  })
+}
+
+const servidor = createServer(async (req, res) => {
+  try {
+    await tratar(req, res)
+  } catch (e) {
+    // Uma unica requisicao malformada (ex.: null byte na URL) nunca pode
+    // derrubar o processo inteiro — isso reiniciaria o pm2 e descartaria
+    // todas as salas em memoria ate o proximo snapshot.
+    console.error('[servidor] erro tratando requisicao:', e)
+    if (res.headersSent) {
+      res.destroy()
+    } else {
+      res.statusCode = 500
+      res.setHeader('content-type', 'application/json')
+      res.end(JSON.stringify({ erro: 'interno', mensagem: 'Erro interno.' }))
+    }
+  }
 })
 
 servidor.listen(PORTA, () => {

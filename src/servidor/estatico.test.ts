@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { join } from 'node:path'
 import { resolverArquivoEstatico } from './estatico'
 
@@ -42,5 +42,19 @@ describe('resolverArquivoEstatico', () => {
   it('cai no index.html quando o arquivo pedido nao existe', () => {
     const r = resolverArquivoEstatico(DIST, '/assets/nao-existe.js', () => false)
     expect(r).toBe(INDEX)
+  })
+
+  it('cai no index.html para null byte codificado (%00) sem nunca chamar existe()', () => {
+    const existe = vi.fn(() => true)
+    const r = resolverArquivoEstatico(DIST, '/assets/x%00.js', existe)
+    expect(r).toBe(INDEX)
+    expect(existe).not.toHaveBeenCalled()
+  })
+
+  it('cai no index.html para null byte cru na string sem nunca chamar existe()', () => {
+    const existe = vi.fn(() => true)
+    const r = resolverArquivoEstatico(DIST, '/assets/x\0.js', existe)
+    expect(r).toBe(INDEX)
+    expect(existe).not.toHaveBeenCalled()
   })
 })
