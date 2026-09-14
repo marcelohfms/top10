@@ -1,6 +1,7 @@
 # Top 10 com Blefe
 
-Jogo de festa local, jogado em grupo compartilhando um único notebook. A cada
+Jogo de festa, jogado em grupo compartilhando um único notebook ou com cada um
+no próprio celular (veja [Jogar online](#jogar-online)). A cada
 rodada o grupo escolhe uma categoria (ex.: "Rios mais longos do mundo") e os
 jogadores se revezam dizendo itens que acham que estão entre os 10 primeiros
 daquela lista — sem poder repetir o que já foi dito. Só que ninguém vê a
@@ -42,9 +43,47 @@ secretas **não** vão para o `localStorage`: só o identificador da categoria �
 gravado, e a lista é recarregada do catálogo do próprio jogo. Abrir o DevTools
 no meio da rodada não entrega a resposta.
 
+## Jogar online
+
+Além do modo de um só aparelho, dá para jogar com cada pessoa no próprio
+celular. O que muda:
+
+- Alguém **cria uma sala** em `/online` e vira o anfitrião. A sala ganha um
+  código de 5 letras e um QR code; os outros entram pelo link, pelo QR ou
+  digitando o código e um apelido.
+- O **anfitrião** escolhe o modo (categorias ou minutos), inicia a partida e,
+  em cada rodada, escolhe a categoria e inicia a rodada. Só ele avança da
+  revelação para a próxima rodada.
+- Cada jogador vê na própria tela apenas o que pode fazer no momento: o campo
+  de palpite quando é a vez dele, o botão **Duvido** depois do palpite de outro.
+- Não existe "ninguém duvidou" online: a janela de dúvida fica aberta até o
+  **próximo palpite**, que a fecha automaticamente.
+- Quem chega atrasado (a partida já começou) entra na sala e passa a jogar a
+  partir da **próxima rodada**.
+- As credenciais ficam no `localStorage` do aparelho; reabrir o link volta
+  para a sala sem digitar nada. A lista secreta nunca sai do servidor até a
+  revelação.
+- A sala expira 6 h depois da última atividade.
+
+Para publicar numa VPS própria, siga [docs/deploy-vps.md](docs/deploy-vps.md).
+
+## Arquitetura
+
+- `src/engine/` — regras do jogo, puras e sem dependência de UI ou servidor.
+- `src/data/` — catálogo de categorias e sua validação.
+- `src/ui/` — telas React; `src/ui/online/` tem as telas e o polling do modo
+  online.
+- `src/servidor/` — API HTTP das salas (`roteador`), autorização, store em
+  memória com snapshot em arquivo e o servidor de arquivos estáticos.
+- `servidor.ts` — o processo Node de produção: serve `dist/` e a API num
+  único porto.
+
 ## Como rodar
 
-Pré-requisitos: Node.js e npm.
+Pré-requisitos: Node.js (>= 22) e npm.
+
+Em desenvolvimento (Vite com hot reload; a API das salas roda dentro do
+próprio dev server):
 
 ```bash
 npm install
@@ -52,6 +91,16 @@ npm run dev
 ```
 
 Abra a URL exibida pelo Vite (normalmente `http://localhost:5173`).
+
+Em produção, um único processo serve o site já compilado e a API:
+
+```bash
+npm run build
+npm start
+```
+
+O servidor escuta na porta `PORTA` (padrão 3000) e guarda o snapshot das salas
+em `DADOS` (padrão `dados/salas.json`).
 
 ## Como rodar os testes
 
