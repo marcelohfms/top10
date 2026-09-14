@@ -1,6 +1,6 @@
 import type { Plugin } from 'vite'
 import { dependenciasPadrao, roteador } from './http'
-import { escreverResponse, paraRequest } from './node-web'
+import { responderApi } from './node-web'
 import { storeMemoria } from './store'
 
 /** Monta as rotas /api no servidor de desenvolvimento do Vite, com store em memoria. */
@@ -11,7 +11,7 @@ export function pluginApi(): Plugin {
     configureServer(server) {
       server.middlewares.use('/api', async (req, res) => {
         req.url = '/api' + (req.url ?? '')
-        await escreverResponse(res, await roteador(await paraRequest(req), deps))
+        await responderApi(req, res, (request) => roteador(request, deps))
       })
     },
   }

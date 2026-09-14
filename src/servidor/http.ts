@@ -34,6 +34,7 @@ const MENSAGENS: Record<ErroServidor, string> = {
   apelido_em_uso: 'Já tem alguém com esse apelido na sala.',
   acao_rejeitada: 'A ação não vale neste momento do jogo.',
   store_indisponivel: 'Não foi possível acessar a sala. Tente de novo.',
+  corpo_grande: 'Requisição grande demais.',
 }
 
 const HTTP: Record<ErroServidor, number> = {
@@ -45,15 +46,17 @@ const HTTP: Record<ErroServidor, number> = {
   apelido_em_uso: 409,
   acao_rejeitada: 422,
   store_indisponivel: 503,
+  corpo_grande: 413,
 }
 
 function jsonResp(status: number, corpo: unknown): Response {
   return new Response(JSON.stringify(corpo), { status, headers: { 'content-type': 'application/json' } })
 }
 
-function erro(e: ErroServidor, extra: Record<string, unknown> = {}): Response {
+export function respostaErro(e: ErroServidor, extra: Record<string, unknown> = {}): Response {
   return jsonResp(HTTP[e], { erro: e, mensagem: MENSAGENS[e], ...extra })
 }
+const erro = respostaErro
 
 async function lerCorpo(request: Request): Promise<Record<string, unknown> | null> {
   try {

@@ -35,6 +35,7 @@ export type ErroServidor =
   | 'apelido_em_uso'
   | 'acao_rejeitada'
   | 'store_indisponivel'
+  | 'corpo_grande'
 
 export type Geradores = {
   novoId(): string

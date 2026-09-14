@@ -40,6 +40,9 @@ Em `/etc/caddy/Caddyfile`:
 
 ```
 seu-dominio.com.br {
+    request_body {
+        max_size 1MB
+    }
     reverse_proxy localhost:3000
 }
 ```

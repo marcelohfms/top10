@@ -3,7 +3,7 @@ import { createReadStream, existsSync, statSync } from 'node:fs'
 import { extname, join, resolve } from 'node:path'
 import { dependenciasPadrao, roteador } from './src/servidor/http'
 import { resolverArquivoEstatico } from './src/servidor/estatico'
-import { escreverResponse, paraRequest } from './src/servidor/node-web'
+import { responderApi } from './src/servidor/node-web'
 import { storeArquivo } from './src/servidor/store-arquivo'
 
 const PORTA = Number(process.env.PORTA ?? 3000)
@@ -37,7 +37,7 @@ setInterval(varrer, INTERVALO_VARREDURA_MS).unref()
 async function tratar(req: IncomingMessage, res: ServerResponse): Promise<void> {
   const url = req.url ?? '/'
   if (url.startsWith('/api/')) {
-    await escreverResponse(res, await roteador(await paraRequest(req), deps))
+    await responderApi(req, res, (request) => roteador(request, deps))
     return
   }
 
