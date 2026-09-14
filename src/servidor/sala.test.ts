@@ -174,6 +174,38 @@ describe('partida', () => {
     }
   })
 
+  it('iniciar_partida depois de fim_jogo comeca uma partida nova com placar zerado', () => {
+    const { sala, host, outro } = salaComDois()
+    let s = ok(aplicarAcaoNaSala(sala, host, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 1 } }, T0, catalogo)).sala
+    s = ok(aplicarAcaoNaSala(s, host, { tipo: 'iniciar_rodada', categoriaId: 'c1' }, T0, catalogo)).sala
+    s = ok(aplicarAcaoNaSala(s, host, { tipo: 'rodada', acao: { tipo: 'palpite', texto: 'Zulu', jogadorId: host } }, T0, catalogo)).sala
+    s = ok(aplicarAcaoNaSala(s, outro, { tipo: 'rodada', acao: { tipo: 'duvidar', duvidadorId: outro } }, T0, catalogo)).sala
+    expect(s.jogo?.fase).toBe('revelacao')
+    s = ok(aplicarAcaoNaSala(s, host, { tipo: 'avancar' }, T0, catalogo)).sala
+    expect(s.jogo?.fase).toBe('fim_jogo')
+
+    const r = aplicarAcaoNaSala(s, host, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 2 } }, T0, catalogo)
+    expect(r.ok).toBe(true)
+    if (r.ok) {
+      expect(r.valor.sala.jogo?.fase).toBe('em_rodada')
+      expect(r.valor.sala.jogo?.concluidas).toEqual([])
+      expect(r.valor.sala.jogo?.placar[host]).toBe(0)
+      expect(r.valor.sala.jogo?.placar[outro]).toBe(0)
+    }
+  })
+
+  it('iniciar_partida no meio de uma partida e rejeitada', () => {
+    const { sala, host } = partidaIniciada()
+    const s2 = ok(aplicarAcaoNaSala(sala, host, { tipo: 'iniciar_rodada', categoriaId: 'c1' }, T0, catalogo)).sala
+    const r = aplicarAcaoNaSala(s2, host, { tipo: 'iniciar_partida', modo: { tipo: 'categorias', quantidade: 2 } }, T0, catalogo)
+    expect(r.ok).toBe(false)
+    if (!r.ok) {
+      expect(r.erro).toBe('acao_rejeitada')
+      expect(r.detalhe).toBe('partida_em_andamento')
+    }
+    expect(s2.jogo?.rodada).not.toBeNull()
+  })
+
   it('entrar_na_partida coloca quem chegou depois na proxima rodada', () => {
     const { sala, host } = partidaIniciada()
     const g = geradores()

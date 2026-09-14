@@ -111,7 +111,17 @@ export function aplicarAcaoNaSala(
 ): Resultado<{ sala: Sala; visao: VisaoSala }> {
   if (!podeExecutar(sala, jogadorId, acao, agora)) return { ok: false, erro: 'nao_autorizado' }
 
-  const jogo = hidratar(sala, catalogo) ?? criarJogo(catalogo)
+  if (acao.tipo === 'iniciar_partida') {
+    const jogoAtual = hidratar(sala, catalogo)
+    if (jogoAtual !== null && jogoAtual.fase !== 'fim_jogo') {
+      return { ok: false, erro: 'acao_rejeitada', detalhe: 'partida_em_andamento' }
+    }
+  }
+
+  const jogo =
+    acao.tipo === 'iniciar_partida'
+      ? criarJogo(catalogo)
+      : hidratar(sala, catalogo) ?? criarJogo(catalogo)
   const r = aplicarAcaoJogo(jogo, traduzir(sala, acao, jogadorId), agora)
   if (!r.ok) return { ok: false, erro: 'acao_rejeitada', detalhe: r.erro }
 
