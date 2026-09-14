@@ -1,8 +1,22 @@
+import type { Perspectiva } from './TelaRodada'
+
 type Props = {
+  perspectiva: Perspectiva
   aoDecidir: (decisao: 'encerrar' | 'terminar_categoria') => void
 }
 
-export function ModalTempo({ aoDecidir }: Props) {
+export function ModalTempo({ perspectiva, aoDecidir }: Props) {
+  const podeDecidir = perspectiva === 'mesa' || perspectiva.podeAgir.host
+
+  if (!podeDecidir) {
+    return (
+      <div className="modal" role="dialog" aria-modal="true" aria-label="Tempo esgotado">
+        <h2>O tempo acabou</h2>
+        <p>O anfitrião está decidindo…</p>
+      </div>
+    )
+  }
+
   return (
     <div className="modal" role="dialog" aria-modal="true" aria-label="Tempo esgotado">
       <h2>O tempo acabou</h2>

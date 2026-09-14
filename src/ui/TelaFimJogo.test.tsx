@@ -33,18 +33,18 @@ const base: EstadoJogo = {
 
 describe('TelaFimJogo', () => {
   it('mostra empate quando ha empate no topo', () => {
-    render(<TelaFimJogo estado={base} aoReiniciar={vi.fn()} />)
+    render(<TelaFimJogo estado={base} perspectiva="mesa" rotuloReiniciar="Nova partida" aoReiniciar={vi.fn()} />)
     expect(screen.getByText(/Empate/)).toBeInTheDocument()
   })
 
   it('revela a lista da rodada abortada', () => {
-    render(<TelaFimJogo estado={base} aoReiniciar={vi.fn()} />)
+    render(<TelaFimJogo estado={base} perspectiva="mesa" rotuloReiniciar="Nova partida" aoReiniciar={vi.fn()} />)
     expect(screen.getByText(/rodada interrompida/i)).toBeInTheDocument()
     expect(screen.getByText('Item 0')).toBeInTheDocument()
   })
 
   it('mostra um unico vencedor quando nao ha empate', () => {
-    render(<TelaFimJogo estado={{ ...base, placar: { a: 3, b: 1 } }} aoReiniciar={vi.fn()} />)
+    render(<TelaFimJogo estado={{ ...base, placar: { a: 3, b: 1 } }} perspectiva="mesa" rotuloReiniciar="Nova partida" aoReiniciar={vi.fn()} />)
     expect(screen.getByText(/Ana venceu a partida/)).toBeInTheDocument()
   })
 })

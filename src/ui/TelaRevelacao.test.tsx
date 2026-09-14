@@ -33,7 +33,7 @@ describe('TelaRevelacao', () => {
       { tipo: 'rodada', acao: { tipo: 'duvidar', duvidadorId: 'b' } },
     )
 
-    render(<TelaRevelacao estado={estado} aoAvancar={vi.fn()} />)
+    render(<TelaRevelacao estado={estado} perspectiva="mesa" aoAvancar={vi.fn()} />)
 
     const itens = screen.getAllByRole('listitem').map((li) => li.textContent)
     expect(itens[0]).toContain('Item 0')

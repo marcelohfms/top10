@@ -15,9 +15,10 @@ function novoIdDeJogador(): string {
 
 type Props = {
   aoConfigurar: (jogadores: Jogador[], modo: ModoDuracao) => void
+  aoJogarOnline?: () => void
 }
 
-export function TelaSetup({ aoConfigurar }: Props) {
+export function TelaSetup({ aoConfigurar, aoJogarOnline }: Props) {
   const [jogadores, setJogadores] = useState<Jogador[]>([])
   const [nome, setNome] = useState('')
   const [tipoModo, setTipoModo] = useState<'categorias' | 'tempo'>('categorias')
@@ -45,6 +46,12 @@ export function TelaSetup({ aoConfigurar }: Props) {
   return (
     <section className="tela tela-setup">
       <h1>Top 10 com Blefe</h1>
+
+      {aoJogarOnline && (
+        <button type="button" onClick={aoJogarOnline}>
+          Jogar online
+        </button>
+      )}
 
       <h2>Jogadores</h2>
       <div className="linha">

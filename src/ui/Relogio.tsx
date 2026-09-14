@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { msDecorridos, msRestantes } from '../engine/relogio'
-import type { EstadoJogo } from '../engine/types'
+import type { EstadoVisivel } from '../engine/types'
 
 function formatar(ms: number): string {
   const total = Math.floor(ms / 1000)
@@ -10,7 +10,7 @@ function formatar(ms: number): string {
 }
 
 type Props = {
-  estado: EstadoJogo
+  estado: EstadoVisivel
 }
 
 export function Relogio({ estado }: Props) {

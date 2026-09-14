@@ -1,11 +1,14 @@
-import type { EstadoJogo } from '../engine/types'
+import type { EstadoVisivel } from '../engine/types'
+import type { Perspectiva } from './TelaRodada'
 
 type Props = {
-  estado: EstadoJogo
+  estado: EstadoVisivel
+  perspectiva: Perspectiva
+  rotuloReiniciar: string
   aoReiniciar: () => void
 }
 
-export function TelaFimJogo({ estado, aoReiniciar }: Props) {
+export function TelaFimJogo({ estado, rotuloReiniciar, aoReiniciar }: Props) {
   const maior = Math.max(0, ...Object.values(estado.placar))
   const campeoes = estado.jogadores.filter((j) => (estado.placar[j.id] ?? 0) === maior)
 
@@ -37,7 +40,7 @@ export function TelaFimJogo({ estado, aoReiniciar }: Props) {
             {c.abortada && ' — rodada interrompida pelo tempo, sem pontuação'}
           </h3>
           <ol className="lista-revelada">
-            {c.categoria.itens.map((item) => (
+            {(c.categoria.itens ?? []).map((item) => (
               <li key={item.nome}>{item.nome}</li>
             ))}
           </ol>
@@ -46,7 +49,7 @@ export function TelaFimJogo({ estado, aoReiniciar }: Props) {
       ))}
 
       <button type="button" className="principal" onClick={aoReiniciar}>
-        Nova partida
+        {rotuloReiniciar}
       </button>
     </section>
   )

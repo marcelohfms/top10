@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import { categoriasDisponiveis } from '../engine/jogo'
-import type { AcaoRodada, ErroRodada, EstadoJogo } from '../engine/types'
+import type { AcaoRodada, ErroRodada, EstadoVisivel, PodeAgir } from '../engine/types'
+
+export type Perspectiva = 'mesa' | { jogadorId: string; podeAgir: PodeAgir }
 
 type Props = {
-  estado: EstadoJogo
+  estado: EstadoVisivel
+  categorias: { id: string; titulo: string }[]
   erro: ErroRodada | 'acao_invalida' | null
+  perspectiva: Perspectiva
   aoEscolherCategoria: (categoriaId: string) => void
   aoAgir: (acao: AcaoRodada) => void
 }
@@ -14,36 +17,47 @@ const MENSAGENS: Record<ErroRodada | 'acao_invalida', string> = {
   palpite_duplicado: 'Esse palpite já foi dito nesta rodada. Tente outro.',
   fase_invalida: 'Ação fora de hora.',
   duvidador_invalido: 'Esse jogador não pode duvidar agora.',
-  jogador_invalido: 'Não é a vez desse jogador.',
+  jogador_invalido: 'Não é a sua vez.',
   acao_invalida: 'Ação inválida.',
 }
 
-export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props) {
+export function TelaRodada({ estado, categorias, erro, perspectiva, aoEscolherCategoria, aoAgir }: Props) {
   const [texto, setTexto] = useState('')
   const rodada = estado.rodada
   const nomeDe = (id: string) => estado.jogadores.find((j) => j.id === id)?.nome ?? id
+  const mesa = perspectiva === 'mesa'
+  const eu = mesa ? null : perspectiva
 
   if (rodada === null) {
+    if (mesa || eu!.podeAgir.host) {
+      return (
+        <section className="tela">
+          <h2>Escolha a categoria</h2>
+          <div className="grade-categorias">
+            {categorias.map((c) => (
+              <button key={c.id} type="button" onClick={() => aoEscolherCategoria(c.id)}>
+                {c.titulo}
+              </button>
+            ))}
+          </div>
+        </section>
+      )
+    }
     return (
       <section className="tela">
-        <h2>Escolha a categoria</h2>
-        <div className="grade-categorias">
-          {categoriasDisponiveis(estado).map((c) => (
-            <button key={c.id} type="button" onClick={() => aoEscolherCategoria(c.id)}>
-              {c.titulo}
-            </button>
-          ))}
-        </div>
+        <p>O anfitrião está escolhendo a categoria…</p>
       </section>
     )
   }
 
+  const ultimo = rodada.palpites[rodada.palpites.length - 1]
+  const mostraCampo = mesa ? rodada.fase === 'palpite' : eu!.podeAgir.palpite
+  const autorDoCampo = mesa ? rodada.vezDe : eu!.jogadorId
+
   const enviarPalpite = () => {
-    aoAgir({ tipo: 'palpite', texto, jogadorId: rodada.vezDe })
+    aoAgir({ tipo: 'palpite', texto, jogadorId: autorDoCampo })
     setTexto('')
   }
-
-  const ultimo = rodada.palpites[rodada.palpites.length - 1]
 
   return (
     <section className="tela">
@@ -53,6 +67,7 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
         {rodada.ordem.map((id) => (
           <li key={id} className={rodada.vivos.includes(id) ? 'jogador-vivo' : 'jogador-eliminado'}>
             {nomeDe(id)}
+            {eu && id === eu.jogadorId && ' (você)'}
           </li>
         ))}
       </ul>
@@ -67,18 +82,24 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
 
       {erro && <p role="alert" className="aviso">{MENSAGENS[erro]}</p>}
 
-      {rodada.fase === 'palpite' && (
+      {rodada.fase === 'janela_duvida' && ultimo && (
+        <p>
+          {nomeDe(ultimo.autorId)} disse: <strong>{ultimo.texto}</strong>
+        </p>
+      )}
+
+      {!mostraCampo && rodada.fase === 'palpite' && <p>Vez de {nomeDe(rodada.vezDe)}</p>}
+
+      {mostraCampo && (
         <div className="linha">
-          <p>Vez de {nomeDe(rodada.vezDe)}</p>
+          <p>{mesa ? `Vez de ${nomeDe(rodada.vezDe)}` : rodada.fase === 'palpite' ? 'Sua vez' : 'Você pode dar o próximo palpite'}</p>
           <label htmlFor="palpite">Seu palpite</label>
           <input
             id="palpite"
             value={texto}
             onChange={(e) => setTexto(e.target.value)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
-                enviarPalpite()
-              }
+              if (e.key === 'Enter') enviarPalpite()
             }}
           />
           <button type="button" className="principal" onClick={enviarPalpite}>
@@ -87,11 +108,8 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
         </div>
       )}
 
-      {rodada.fase === 'janela_duvida' && ultimo && (
+      {rodada.fase === 'janela_duvida' && ultimo && mesa && (
         <div className="janela-duvida">
-          <p>
-            {nomeDe(ultimo.autorId)} disse: <strong>{ultimo.texto}</strong>
-          </p>
           <div className="grade-categorias">
             {rodada.vivos
               .filter((id) => id !== ultimo.autorId)
@@ -101,12 +119,16 @@ export function TelaRodada({ estado, erro, aoEscolherCategoria, aoAgir }: Props)
                 </button>
               ))}
           </div>
-          <button
-            type="button"
-            className="principal"
-            onClick={() => aoAgir({ tipo: 'ninguem_duvidou' })}
-          >
+          <button type="button" className="principal" onClick={() => aoAgir({ tipo: 'ninguem_duvidou' })}>
             Ninguém duvidou
+          </button>
+        </div>
+      )}
+
+      {rodada.fase === 'janela_duvida' && eu && eu.podeAgir.duvidar && (
+        <div className="janela-duvida">
+          <button type="button" className="principal" onClick={() => aoAgir({ tipo: 'duvidar', duvidadorId: eu.jogadorId })}>
+            Duvido
           </button>
         </div>
       )}

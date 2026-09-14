@@ -1,9 +1,9 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { App } from './ui/App'
+import { Raiz } from './ui/Raiz'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Raiz />
   </StrictMode>,
 )

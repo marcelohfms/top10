@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { aplicarAcaoJogo, criarJogo } from '../engine/jogo'
+import { aplicarAcaoJogo, categoriasDisponiveis, criarJogo } from '../engine/jogo'
 import { carregarCategorias } from '../data/carregar'
 import { carregarEstado, limparEstado, salvarEstado } from '../persistencia'
 import type { AcaoJogo, AcaoRodada, ErroRodada, EstadoJogo, Jogador, ModoDuracao } from '../engine/types'
@@ -9,6 +9,7 @@ import { TelaRevelacao } from './TelaRevelacao'
 import { TelaFimJogo } from './TelaFimJogo'
 import { ModalTempo } from './ModalTempo'
 import { Relogio } from './Relogio'
+import { navegar } from './rota'
 import './estilos.css'
 
 const catalogo = carregarCategorias()
@@ -61,6 +62,7 @@ export function App() {
         aoConfigurar={(jogadores: Jogador[], modo: ModoDuracao) =>
           despachar({ tipo: 'configurar', jogadores, modo })
         }
+        aoJogarOnline={() => navegar('/online')}
       />
     )
   }
@@ -72,23 +74,27 @@ export function App() {
       {estado.fase === 'em_rodada' && (
         <TelaRodada
           estado={estado}
+          categorias={categoriasDisponiveis(estado).map((c) => ({ id: c.id, titulo: c.titulo }))}
           erro={erro}
+          perspectiva="mesa"
           aoEscolherCategoria={(categoriaId) => despachar({ tipo: 'iniciar_rodada', categoriaId })}
           aoAgir={(acao: AcaoRodada) => despachar({ tipo: 'rodada', acao })}
         />
       )}
 
       {estado.fase === 'revelacao' && (
-        <TelaRevelacao estado={estado} aoAvancar={() => despachar({ tipo: 'avancar' })} />
+        <TelaRevelacao estado={estado} perspectiva="mesa" aoAvancar={() => despachar({ tipo: 'avancar' })} />
       )}
 
       {estado.fase === 'decisao_tempo' && (
-        <ModalTempo aoDecidir={(decisao) => despachar({ tipo: 'decidir_expiracao', decisao })} />
+        <ModalTempo perspectiva="mesa" aoDecidir={(decisao) => despachar({ tipo: 'decidir_expiracao', decisao })} />
       )}
 
       {estado.fase === 'fim_jogo' && (
         <TelaFimJogo
           estado={estado}
+          perspectiva="mesa"
+          rotuloReiniciar="Nova partida"
           aoReiniciar={() => {
             limparEstado()
             setEstado(criarJogo(catalogo))

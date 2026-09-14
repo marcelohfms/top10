@@ -6,7 +6,7 @@ import { ModalTempo } from './ModalTempo'
 describe('ModalTempo', () => {
   it('oferece as duas decisoes', async () => {
     const aoDecidir = vi.fn()
-    render(<ModalTempo aoDecidir={aoDecidir} />)
+    render(<ModalTempo perspectiva="mesa" aoDecidir={aoDecidir} />)
     const usuario = userEvent.setup()
 
     expect(screen.getByRole('dialog')).toHaveTextContent('acabou')
