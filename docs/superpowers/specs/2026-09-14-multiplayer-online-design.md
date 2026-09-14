@@ -17,7 +17,7 @@ O jogo de um dispositivo continua existindo e funcionando como hoje.
 | Alcance | Internet, qualquer lugar |
 | Hospedagem | Vercel: front Vite + funções em `api/` no mesmo deploy |
 | Transporte | HTTP + polling de 1 s. Sem WebSocket |
-| Estado da sala | Store chave-valor com compare-and-set, do Vercel Marketplace; fornecedor escolhido na implementação pelo fluxo do Marketplace |
+| Estado da sala | Tabela `salas` num Postgres do Supabase (projeto já existente do dono), com compare-and-set por `UPDATE … WHERE versao = esperada`. Acesso só pelo servidor, com a service role key |
 | Entrada | Código de sala + apelido, sem conta |
 | Autoridade | Servidor. Roda a mesma engine; o cliente só renderiza e envia ações |
 | Sigilo | A lista de itens nunca sai do servidor durante a rodada |
@@ -26,7 +26,7 @@ O jogo de um dispositivo continua existindo e funcionando como hoje.
 ## 3. Topologia
 
 ```
-celulares ──HTTP──▶ api/ (funções Vercel) ──▶ store chave-valor (CAS)
+celulares ──HTTP──▶ api/ (funções Vercel) ──▶ Supabase Postgres, tabela `salas` (CAS)
                         │
                         └─ src/engine (a mesma de hoje)
 ```
@@ -161,7 +161,7 @@ curso e afirmar que **nenhum** `itens[n].nome` ou apelido aparece na string.
 - `src/servidor/autorizacao.ts` — `podeExecutar(sala, jogadorId, acao, agora)`.
 - `src/servidor/codigo.ts` — geração de código de sala (5 letras, sem `I`, `O`, `0`, `1`).
 - `src/servidor/store.ts` — interface `StoreSala { obter(codigo); gravarSe(sala, versaoEsperada); }`
-  com `storeMemoria` (testes e dev) e o adaptador real do Marketplace.
+  com `storeMemoria` (testes e dev) e `store-supabase.ts` (produção). TTL de 6 h aplicado na leitura: linha mais velha que isso é apagada e tratada como inexistente.
 - `api/salas/...` — lê request, chama o store, chama a função pura, escreve response.
 
 Fluxo de uma ação:
