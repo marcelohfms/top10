@@ -39,6 +39,15 @@ describe('storeArquivo', () => {
     expect((await s2.obter('ABCDE'))?.versao).toBe(2)
   })
 
+  it('ao recarregar com agoraNaCarga, todos os jogadores ganham presenca fresca', async () => {
+    const caminho = await caminhoTemp()
+    const s1 = await storeArquivo(caminho)
+    await s1.gravarSe({ ...sala(1), jogadores: [{ id: 'h', apelido: 'Ana', token: 't', ultimoPollEm: 0 }] }, 0)
+    await s1.aguardarGravacao()
+    const s2 = await storeArquivo(caminho, 5_000)
+    expect((await s2.obter('ABCDE'))?.jogadores[0].ultimoPollEm).toBe(5_000)
+  })
+
   it('gravacao so de presenca (mesma versao) atualiza a memoria mas nao reescreve o disco', async () => {
     const caminho = await caminhoTemp()
     const s = await storeArquivo(caminho)

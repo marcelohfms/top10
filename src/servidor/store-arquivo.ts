@@ -20,11 +20,21 @@ export type StoreArquivo = StoreSala & {
  * atomica (arquivo temporario + rename) e serializada: nunca ha duas escritas
  * em voo, e uma gravacao que chega durante outra so agenda mais uma no fim.
  */
-export async function storeArquivo(caminho: string): Promise<StoreArquivo> {
+export async function storeArquivo(caminho: string, agoraNaCarga?: number): Promise<StoreArquivo> {
   const salas = new Map<string, Sala>()
   try {
     const bruto = JSON.parse(await readFile(caminho, 'utf8')) as Record<string, Sala>
-    for (const [codigo, sala] of Object.entries(bruto)) salas.set(codigo, sala)
+    for (const [codigo, sala] of Object.entries(bruto)) {
+      // A presenca (ultimoPollEm) nao vai ao snapshot a cada poll, entao ao
+      // recarregar todo mundo pareceria ausente ate o primeiro poll — e um
+      // nao-host viraria host efetivo por alguns segundos. Todos ganham
+      // 30 s de carencia a partir da subida.
+      const jogadores =
+        agoraNaCarga === undefined
+          ? sala.jogadores
+          : sala.jogadores.map((j) => ({ ...j, ultimoPollEm: agoraNaCarga }))
+      salas.set(codigo, { ...sala, jogadores })
+    }
   } catch {
     // arquivo inexistente ou corrompido: comeca vazio
   }
@@ -77,7 +87,13 @@ export async function storeArquivo(caminho: string): Promise<StoreArquivo> {
       if (sala.versao !== versaoAtual) agendarEscrita()
       return true
     },
-    aguardarGravacao: () => escrevendo,
+    // Uma gravacao pode ser agendada enquanto outra esta em voo: espera ate
+    // nao sobrar nada pendente, senao o encerramento perde a ultima.
+    aguardarGravacao: async () => {
+      do {
+        await escrevendo
+      } while (pendente)
+    },
     removerExpiradas,
   }
 }

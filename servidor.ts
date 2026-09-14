@@ -21,7 +21,7 @@ const TIPOS: Record<string, string> = {
   '.woff2': 'font/woff2',
 }
 
-const store = await storeArquivo(DADOS)
+const store = await storeArquivo(DADOS, Date.now())
 const deps = dependenciasPadrao(store)
 
 // Varredura de salas expiradas: na subida e a cada 10 min, para memoria e
