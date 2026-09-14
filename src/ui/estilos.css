@@ -391,6 +391,26 @@ button:disabled {
 }
 
 /* ---------------------------------------------------------------------- */
+/* Entrada e lobby online                                                  */
+/* ---------------------------------------------------------------------- */
+
+.codigo-sala {
+  font-size: 4rem;
+  letter-spacing: 0.3em;
+  font-weight: 700;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.qr {
+  display: block;
+  margin: 0 auto 1rem;
+  background: #fff;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+/* ---------------------------------------------------------------------- */
 /* Responsivo — otimizado para notebook, sem quebrar em celular vertical.  */
 /* ---------------------------------------------------------------------- */
 
