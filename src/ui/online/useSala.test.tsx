@@ -47,6 +47,22 @@ describe('useSala', () => {
     expect((init as RequestInit).headers).toMatchObject({ 'X-Jogador-Id': 'j', 'X-Jogador-Token': 't' })
   })
 
+  it('o poll informa o ultimo status de host conhecido', async () => {
+    salvarCredenciais('ABCDE', { jogadorId: 'j', token: 't' })
+    fetchMock
+      .mockResolvedValueOnce(resposta(200, { versao: 1, visao: { ...visao(1), ehHost: false } }))
+      .mockResolvedValueOnce(resposta(200, { versao: 1, visao: { ...visao(1), ehHost: true } }))
+      .mockResolvedValue(resposta(204))
+    const { result } = renderHook(() => useSala('ABCDE'))
+    expect(String(fetchMock.mock.calls[0][0])).toBe('/api/salas/ABCDE')
+    await waitFor(() => expect(result.current.visao?.ehHost).toBe(false))
+    await act(async () => { await vi.advanceTimersByTimeAsync(1000) })
+    expect(String(fetchMock.mock.calls[1][0])).toBe('/api/salas/ABCDE?versao=1&host=0')
+    await waitFor(() => expect(result.current.visao?.ehHost).toBe(true))
+    await act(async () => { await vi.advanceTimersByTimeAsync(1000) })
+    expect(String(fetchMock.mock.calls[2][0])).toBe('/api/salas/ABCDE?versao=1&host=1')
+  })
+
   it('204 mantem a visao; 200 substitui', async () => {
     salvarCredenciais('ABCDE', { jogadorId: 'j', token: 't' })
     fetchMock

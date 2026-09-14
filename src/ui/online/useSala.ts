@@ -23,6 +23,8 @@ export function useSala(codigo: string) {
 
   const versaoRef = useRef<number | null>(null)
   versaoRef.current = versao
+  const ehHostRef = useRef<boolean | null>(null)
+  ehHostRef.current = visao === null ? null : visao.ehHost
 
   const adotar = useCallback((v: number, vis: VisaoSala) => {
     setVersao(v)
@@ -46,7 +48,7 @@ export function useSala(codigo: string) {
       timer = null
       if (!ativo) return
       if (typeof document !== 'undefined' && document.hidden) return
-      const r = await lerApi(codigo, cred, versaoRef.current)
+      const r = await lerApi(codigo, cred, versaoRef.current, ehHostRef.current)
       if (!ativo) return
       if (r.ok) {
         intervalo = INTERVALO_MS

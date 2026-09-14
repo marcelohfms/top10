@@ -48,8 +48,10 @@ export function criarSalaApi(apelido: string) {
 export function entrarApi(codigo: string, apelido: string) {
   return chamar<CorpoEntrada>(`/api/salas/${codigo}/entrar`, json({ apelido })) as Promise<RespostaApi<CorpoEntrada>>
 }
-export function lerApi(codigo: string, c: Credenciais, versao: number | null) {
-  const q = versao === null ? '' : `?versao=${versao}`
+export function lerApi(codigo: string, c: Credenciais, versao: number | null, ehHost: boolean | null = null) {
+  // `host` e o ultimo status de host que o cliente viu: o servidor devolve 200
+  // se ele mudou, mesmo com a mesma versao.
+  const q = versao === null ? '' : `?versao=${versao}${ehHost === null ? '' : `&host=${ehHost ? 1 : 0}`}`
   return chamar<CorpoLeitura>(`/api/salas/${codigo}${q}`, { method: 'GET', headers: auth(c) }, true)
 }
 export function agirApi(codigo: string, c: Credenciais, versao: number, acao: AcaoSala) {

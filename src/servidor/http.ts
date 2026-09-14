@@ -176,8 +176,14 @@ async function getSala(request: Request, deps: DependenciasHttp, codigo: string)
   // corrida, nao importa: a leitura e informativa.
   await comStore(() => deps.store.gravarSe(nova, sala.versao))
 
-  const vista = Number(new URL(request.url).searchParams.get('versao'))
-  if (Number.isInteger(vista) && vista === nova.versao) return new Response(null, { status: 204 })
+  // 204 so quando nada que o cliente enxerga mudou. O status de host depende
+  // do relogio (host ausente ha 30 s), nao da versao; por isso o cliente manda
+  // o ultimo `host` que conhece. Sem o parametro, so a versao decide.
+  const params = new URL(request.url).searchParams
+  const vista = Number(params.get('versao'))
+  const hostVisto = params.get('host')
+  const hostMudou = (hostVisto === '0' || hostVisto === '1') && (hostVisto === '1') !== visao.ehHost
+  if (Number.isInteger(vista) && vista === nova.versao && !hostMudou) return new Response(null, { status: 204 })
   return jsonResp(200, { versao: nova.versao, visao })
 }
 

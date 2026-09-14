@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest'
 import { roteador, type DependenciasHttp } from './http'
 import { storeMemoria } from './store'
-import { TTL_SALA_MS } from './tipos'
+import { HOST_AUSENTE_MS, TTL_SALA_MS } from './tipos'
 import type { Categoria } from '../engine/types'
 
 function cat(id: string): Categoria {
@@ -88,6 +88,32 @@ describe('ler', () => {
     expect(b.versao).toBe(versao)
     expect(b.visao.jogadorId).toBe(outro.id)
     expect(b.visao.jogadores).toHaveLength(2)
+  })
+
+  it('host ausente: GET com host=0 volta 200 com ehHost=true mesmo sem mudar a versao', async () => {
+    const { outro, versao } = await salaComDois()
+    relogio += HOST_AUSENTE_MS + 1
+    const r = await req('GET', `/api/salas/ABCDE?versao=${versao}&host=0`, { headers: auth(outro.id, outro.token) })
+    expect(r.status).toBe(200)
+    const b = await r.json()
+    expect(b.versao).toBe(versao)
+    expect(b.visao.ehHost).toBe(true)
+  })
+
+  it('host de volta: GET com host=1 volta 200 com ehHost=false', async () => {
+    const { host, outro, versao } = await salaComDois()
+    relogio += HOST_AUSENTE_MS + 1
+    await req('GET', `/api/salas/ABCDE?versao=${versao}&host=0`, { headers: auth(outro.id, outro.token) })
+    await req('GET', `/api/salas/ABCDE?versao=${versao}&host=1`, { headers: auth(host.id, host.token) })
+    const r = await req('GET', `/api/salas/ABCDE?versao=${versao}&host=1`, { headers: auth(outro.id, outro.token) })
+    expect(r.status).toBe(200)
+    expect((await r.json()).visao.ehHost).toBe(false)
+  })
+
+  it('204 quando nem a versao nem o status de host mudaram', async () => {
+    const { host, outro, versao } = await salaComDois()
+    expect((await req('GET', `/api/salas/ABCDE?versao=${versao}&host=1`, { headers: auth(host.id, host.token) })).status).toBe(204)
+    expect((await req('GET', `/api/salas/ABCDE?versao=${versao}&host=0`, { headers: auth(outro.id, outro.token) })).status).toBe(204)
   })
 
   it('sala parada ha mais de 6 h e 404', async () => {
