@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { aplicarAcaoJogo, categoriasDisponiveis, criarJogo } from '../engine/jogo'
+import { embaralhar } from '../engine/embaralhar'
 import { carregarCategorias } from '../data/carregar'
 import { carregarEstado, limparEstado, salvarEstado } from '../persistencia'
 import type { AcaoJogo, AcaoRodada, ErroRodada, EstadoJogo, Jogador, ModoDuracao } from '../engine/types'
@@ -77,7 +78,9 @@ export function App() {
           categorias={categoriasDisponiveis(estado).map((c) => ({ id: c.id, titulo: c.titulo }))}
           erro={erro}
           perspectiva="mesa"
-          aoEscolherCategoria={(categoriaId) => despachar({ tipo: 'iniciar_rodada', categoriaId })}
+          aoEscolherCategoria={(categoriaId) =>
+            despachar({ tipo: 'iniciar_rodada', categoriaId, ordem: embaralhar(estado.jogadores.map((j) => j.id)) })
+          }
           aoAgir={(acao: AcaoRodada) => despachar({ tipo: 'rodada', acao })}
         />
       )}

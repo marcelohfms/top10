@@ -87,7 +87,8 @@ export type EstadoJogo = {
 
 export type AcaoJogo =
   | { tipo: 'configurar'; jogadores: Jogador[]; modo: ModoDuracao }
-  | { tipo: 'iniciar_rodada'; categoriaId: string }
+  /** `ordem`: permutacao sorteada dos jogadores; ausente, vale a ordem de entrada. */
+  | { tipo: 'iniciar_rodada'; categoriaId: string; ordem?: string[] }
   | { tipo: 'rodada'; acao: AcaoRodada }
   | { tipo: 'tick' }
   | { tipo: 'decidir_expiracao'; decisao: 'encerrar' | 'terminar_categoria' }

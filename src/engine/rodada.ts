@@ -8,8 +8,11 @@ import type {
   ResultadoRodada,
 } from './types'
 
-export function iniciarRodada(categoria: Categoria, jogadores: Jogador[]): EstadoRodada {
-  const ordem = jogadores.map((j) => j.id)
+export function iniciarRodada(
+  categoria: Categoria,
+  jogadores: Jogador[],
+  ordem: string[] = jogadores.map((j) => j.id),
+): EstadoRodada {
   return {
     categoria,
     fase: 'palpite',

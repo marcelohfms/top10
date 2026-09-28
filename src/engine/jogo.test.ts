@@ -87,6 +87,19 @@ describe('fluxo de rodada', () => {
     if (!r.ok) expect(r.erro).toBe('acao_invalida')
   })
 
+  it('usa a ordem sorteada recebida: comeca por quem vem primeiro nela', () => {
+    const e = aplicar(base(), T0, { tipo: 'iniciar_rodada', categoriaId: 'c1', ordem: ['b', 'a'] })
+    expect(e.rodada?.ordem).toEqual(['b', 'a'])
+    expect(e.rodada?.vezDe).toBe('b')
+  })
+
+  it('rejeita ordem que nao e permutacao dos jogadores', () => {
+    for (const ordem of [['a'], ['a', 'a'], ['a', 'x'], ['a', 'b', 'c']]) {
+      const r = aplicarAcaoJogo(base(), { tipo: 'iniciar_rodada', categoriaId: 'c1', ordem }, T0)
+      expect(r.ok).toBe(false)
+    }
+  })
+
   it('propaga o erro da rodada sem alterar o estado', () => {
     const e = aplicar(base(), T0, { tipo: 'iniciar_rodada', categoriaId: 'c1' })
     const r = aplicarAcaoJogo(e, { tipo: 'rodada', acao: { tipo: 'palpite', texto: '', jogadorId: 'a' } }, T0)

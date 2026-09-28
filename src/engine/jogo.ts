@@ -26,6 +26,10 @@ function jaJogou(estado: EstadoJogo, categoriaId: string): boolean {
   return estado.concluidas.some((c) => c.categoria.id === categoriaId)
 }
 
+function ehPermutacao(ordem: string[], ids: string[]): boolean {
+  return ordem.length === ids.length && new Set(ordem).size === ordem.length && ordem.every((id) => ids.includes(id))
+}
+
 function atingiuLimiteDeCategorias(estado: EstadoJogo): boolean {
   return (
     estado.relogio.modo.tipo === 'categorias' &&
@@ -70,7 +74,10 @@ export function aplicarAcaoJogo(
       if (!categoria || jaJogou(estado, categoria.id)) {
         return { ok: false, erro: 'acao_invalida', estado }
       }
-      return { ok: true, estado: { ...estado, rodada: iniciarRodada(categoria, estado.jogadores) } }
+      if (acao.ordem !== undefined && !ehPermutacao(acao.ordem, estado.jogadores.map((j) => j.id))) {
+        return { ok: false, erro: 'acao_invalida', estado }
+      }
+      return { ok: true, estado: { ...estado, rodada: iniciarRodada(categoria, estado.jogadores, acao.ordem) } }
     }
 
     case 'rodada': {

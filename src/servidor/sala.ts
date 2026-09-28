@@ -1,3 +1,4 @@
+import { embaralhar } from '../engine/embaralhar'
 import { aplicarAcaoJogo, criarJogo } from '../engine/jogo'
 import { normalizar } from '../engine/normalizar'
 import { visaoPublica } from '../engine/visao'
@@ -108,6 +109,7 @@ export function aplicarAcaoNaSala(
   acao: AcaoSala,
   agora: number,
   catalogo: Categoria[],
+  aleatorio?: () => number,
 ): Resultado<{ sala: Sala; visao: VisaoSala }> {
   if (!podeExecutar(sala, jogadorId, acao, agora)) return { ok: false, erro: 'nao_autorizado' }
 
@@ -122,7 +124,13 @@ export function aplicarAcaoNaSala(
     acao.tipo === 'iniciar_partida'
       ? criarJogo(catalogo)
       : hidratar(sala, catalogo) ?? criarJogo(catalogo)
-  const r = aplicarAcaoJogo(jogo, traduzir(sala, acao, jogadorId), agora)
+  let acaoJogo = traduzir(sala, acao, jogadorId)
+  if (acaoJogo.tipo === 'iniciar_rodada') {
+    // A ordem e sorteada aqui, nunca aceita do cliente.
+    const ids = jogo.jogadores.map((j) => j.id)
+    acaoJogo = { tipo: 'iniciar_rodada', categoriaId: acaoJogo.categoriaId, ordem: aleatorio ? embaralhar(ids, aleatorio) : ids }
+  }
+  const r = aplicarAcaoJogo(jogo, acaoJogo, agora)
   if (!r.ok) return { ok: false, erro: 'acao_rejeitada', detalhe: r.erro }
 
   const nova: Sala = {

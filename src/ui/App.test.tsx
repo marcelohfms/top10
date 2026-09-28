@@ -1,10 +1,33 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { App } from './App'
 import { limparEstado } from '../persistencia'
 
-beforeEach(() => limparEstado())
+beforeEach(() => {
+  limparEstado()
+  // Sorteio neutro (embaralhar mantem a ordem com 0.99): os roteiros abaixo
+  // contam com Ana abrindo a rodada.
+  vi.spyOn(Math, 'random').mockReturnValue(0.99)
+})
+afterEach(() => vi.restoreAllMocks())
+
+describe('App — ordem dos jogadores', () => {
+  it('sorteia quem abre a rodada', async () => {
+    vi.mocked(Math.random).mockReturnValue(0)
+    render(<App />)
+    const usuario = userEvent.setup()
+
+    for (const nome of ['Ana', 'Bruno']) {
+      await usuario.type(screen.getByLabelText('Nome do jogador'), nome)
+      await usuario.click(screen.getByRole('button', { name: 'Adicionar jogador' }))
+    }
+    await usuario.click(screen.getByRole('button', { name: 'Começar partida' }))
+    await usuario.click(screen.getAllByRole('button')[0])
+
+    expect(screen.getByText(/Vez de Bruno/)).toBeInTheDocument()
+  })
+})
 
 describe('App — partida completa', () => {
   it('vai do setup ao fim de jogo em uma rodada', async () => {

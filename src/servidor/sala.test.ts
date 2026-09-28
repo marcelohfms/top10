@@ -156,6 +156,14 @@ describe('partida', () => {
     expect(r.visao.jogo?.rodada?.fase).toBe('janela_duvida')
   })
 
+  it('iniciar_rodada sorteia a ordem com o gerador do servidor, ignorando a do cliente', () => {
+    const { sala, host, outro } = partidaIniciada()
+    const acao = { tipo: 'iniciar_rodada' as const, categoriaId: 'c1', ordem: [host, outro] }
+    const r = ok(aplicarAcaoNaSala(sala, host, acao, T0, catalogo, () => 0))
+    expect(r.sala.jogo?.rodada?.ordem).toEqual([outro, host])
+    expect(r.sala.jogo?.rodada?.vezDe).toBe(outro)
+  })
+
   it('acao nao autorizada devolve nao_autorizado', () => {
     const { sala, outro } = partidaIniciada()
     const r = aplicarAcaoNaSala(sala, outro, { tipo: 'iniciar_rodada', categoriaId: 'c1' }, T0, catalogo)

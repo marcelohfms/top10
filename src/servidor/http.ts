@@ -21,6 +21,7 @@ export function dependenciasPadrao(store: StoreSala): DependenciasHttp {
       novoId: () => crypto.randomUUID(),
       novoToken: () => crypto.randomUUID() + crypto.randomUUID(),
       novoCodigo: () => gerarCodigo(Math.random),
+      aleatorio: Math.random,
     },
   }
 }
@@ -203,7 +204,7 @@ async function postAcoes(request: Request, deps: DependenciasHttp, codigo: strin
   if (corpo.versao !== sala.versao) {
     return erro('versao_desatualizada', { versao: sala.versao, visao: montarVisao(sala, cred.id, agora, deps.catalogo) })
   }
-  const r = aplicarAcaoNaSala(sala, cred.id, corpo.acao, agora, deps.catalogo)
+  const r = aplicarAcaoNaSala(sala, cred.id, corpo.acao, agora, deps.catalogo, deps.geradores.aleatorio)
   if (!r.ok) return erro(r.erro, r.detalhe ? { detalhe: r.detalhe } : {})
   const gravou = await comStore(() => deps.store.gravarSe(r.valor.sala, sala.versao))
   if (gravou instanceof Response) return gravou

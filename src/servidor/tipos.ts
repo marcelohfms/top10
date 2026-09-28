@@ -41,6 +41,8 @@ export type Geradores = {
   novoId(): string
   novoToken(): string
   novoCodigo(): string
+  /** Sorteia a ordem dos jogadores a cada rodada; ausente, vale a ordem de entrada. */
+  aleatorio?(): number
 }
 
 export const TTL_SALA_MS = 6 * 60 * 60 * 1000
