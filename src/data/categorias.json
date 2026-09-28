@@ -2194,5 +2194,462 @@
         ]
       }
     ]
+  },
+  {
+    "id": "musicas-mais-streamed-spotify",
+    "titulo": "Músicas mais ouvidas de todos os tempos no Spotify",
+    "fonte": "kworb.net (streams totais acumulados na plataforma), setembro de 2026",
+    "itens": [
+      {
+        "nome": "Blinding Lights",
+        "apelidos": [
+          "the weeknd blinding lights"
+        ]
+      },
+      {
+        "nome": "Shape of You",
+        "apelidos": [
+          "ed sheeran shape of you"
+        ]
+      },
+      {
+        "nome": "Sweater Weather",
+        "apelidos": [
+          "the neighbourhood sweater weather"
+        ]
+      },
+      {
+        "nome": "Starboy",
+        "apelidos": [
+          "the weeknd starboy"
+        ]
+      },
+      {
+        "nome": "As It Was",
+        "apelidos": [
+          "harry styles as it was"
+        ]
+      },
+      {
+        "nome": "One Dance",
+        "apelidos": [
+          "drake one dance"
+        ]
+      },
+      {
+        "nome": "Sunflower",
+        "apelidos": [
+          "post malone sunflower",
+          "sunflower spider-man"
+        ]
+      },
+      {
+        "nome": "Someone You Loved",
+        "apelidos": [
+          "lewis capaldi someone you loved"
+        ]
+      },
+      {
+        "nome": "Perfect",
+        "apelidos": [
+          "ed sheeran perfect"
+        ]
+      },
+      {
+        "nome": "Stay",
+        "apelidos": [
+          "the kid laroi stay",
+          "stay justin bieber"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "contas-mais-seguidas-instagram",
+    "titulo": "Contas mais seguidas no Instagram",
+    "fonte": "Wikipedia, List of most-followed Instagram accounts, setembro de 2026",
+    "itens": [
+      {
+        "nome": "Instagram (conta oficial)",
+        "apelidos": [
+          "instagram",
+          "@instagram"
+        ]
+      },
+      {
+        "nome": "Cristiano Ronaldo",
+        "apelidos": [
+          "cr7",
+          "ronaldo"
+        ]
+      },
+      {
+        "nome": "Lionel Messi",
+        "apelidos": [
+          "messi"
+        ]
+      },
+      {
+        "nome": "Selena Gomez",
+        "apelidos": [
+          "selena"
+        ]
+      },
+      {
+        "nome": "Dwayne Johnson",
+        "apelidos": [
+          "the rock",
+          "rock"
+        ]
+      },
+      {
+        "nome": "Kylie Jenner",
+        "apelidos": [
+          "kylie"
+        ]
+      },
+      {
+        "nome": "Ariana Grande",
+        "apelidos": [
+          "ariana"
+        ]
+      },
+      {
+        "nome": "Kim Kardashian",
+        "apelidos": [
+          "kim k"
+        ]
+      },
+      {
+        "nome": "Beyoncé",
+        "apelidos": [
+          "beyonce",
+          "queen b"
+        ]
+      },
+      {
+        "nome": "Khloé Kardashian",
+        "apelidos": [
+          "khloe kardashian",
+          "khloe"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "canais-mais-inscritos-youtube",
+    "titulo": "Canais com mais inscritos no YouTube",
+    "fonte": "Wikipedia, List of most-subscribed YouTube channels, setembro de 2026",
+    "itens": [
+      {
+        "nome": "MrBeast",
+        "apelidos": []
+      },
+      {
+        "nome": "T-Series",
+        "apelidos": []
+      },
+      {
+        "nome": "Cocomelon",
+        "apelidos": [
+          "cocomelon nursery rhymes"
+        ]
+      },
+      {
+        "nome": "SET India",
+        "apelidos": [
+          "sony entertainment television india"
+        ]
+      },
+      {
+        "nome": "Vlad and Niki",
+        "apelidos": [
+          "vlad e niki"
+        ]
+      },
+      {
+        "nome": "Stokes Twins",
+        "apelidos": [
+          "stokes twins gemeos"
+        ]
+      },
+      {
+        "nome": "Kids Diana Show",
+        "apelidos": [
+          "diana show"
+        ]
+      },
+      {
+        "nome": "KIMPRO",
+        "apelidos": [
+          "kim pro",
+          "김프로"
+        ]
+      },
+      {
+        "nome": "Like Nastya",
+        "apelidos": [
+          "nastya"
+        ]
+      },
+      {
+        "nome": "Zee Music Company",
+        "apelidos": [
+          "zee music"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "bolas-de-ouro-mais-vitorias",
+    "titulo": "Jogadores com mais Bolas de Ouro (Ballon d'Or)",
+    "fonte": "Wikipedia, contagem oficial de vencedores do Ballon d'Or masculino até 2025",
+    "itens": [
+      {
+        "nome": "Lionel Messi",
+        "apelidos": [
+          "messi"
+        ]
+      },
+      {
+        "nome": "Cristiano Ronaldo",
+        "apelidos": [
+          "cr7"
+        ]
+      },
+      {
+        "nome": "Johan Cruyff",
+        "apelidos": [
+          "cruyff"
+        ]
+      },
+      {
+        "nome": "Michel Platini",
+        "apelidos": [
+          "platini"
+        ]
+      },
+      {
+        "nome": "Marco van Basten",
+        "apelidos": [
+          "van basten"
+        ]
+      },
+      {
+        "nome": "Alfredo Di Stéfano",
+        "apelidos": [
+          "di stefano"
+        ]
+      },
+      {
+        "nome": "Franz Beckenbauer",
+        "apelidos": [
+          "beckenbauer"
+        ]
+      },
+      {
+        "nome": "Kevin Keegan",
+        "apelidos": [
+          "keegan"
+        ]
+      },
+      {
+        "nome": "Karl-Heinz Rummenigge",
+        "apelidos": [
+          "rummenigge"
+        ]
+      },
+      {
+        "nome": "Ronaldo Nazário",
+        "apelidos": [
+          "ronaldo fenomeno",
+          "ronaldo brasileiro",
+          "fenomeno"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "filmes-mais-vistos-netflix",
+    "titulo": "Filmes mais vistos da Netflix (idioma inglês, por horas assistidas)",
+    "fonte": "Netflix (métrica oficial de horas assistidas via Tudum), compilado por whats-on-netflix.com, setembro de 2026",
+    "itens": [
+      {
+        "nome": "Guerreiras do K-Pop",
+        "apelidos": [
+          "kpop demon hunters"
+        ]
+      },
+      {
+        "nome": "Red Notice",
+        "apelidos": []
+      },
+      {
+        "nome": "Não Olhe para Cima",
+        "apelidos": [
+          "dont look up",
+          "don't look up"
+        ]
+      },
+      {
+        "nome": "Carry-On",
+        "apelidos": [
+          "carry on"
+        ]
+      },
+      {
+        "nome": "Leave the World Behind",
+        "apelidos": []
+      },
+      {
+        "nome": "Bird Box",
+        "apelidos": []
+      },
+      {
+        "nome": "The Adam Project",
+        "apelidos": [
+          "adam project"
+        ]
+      },
+      {
+        "nome": "Back in Action",
+        "apelidos": []
+      },
+      {
+        "nome": "War Machine",
+        "apelidos": []
+      },
+      {
+        "nome": "Swapped",
+        "apelidos": []
+      }
+    ]
+  },
+  {
+    "id": "series-mais-vistas-netflix",
+    "titulo": "Séries mais vistas da Netflix (idioma inglês, pela temporada de maior audiência, em horas assistidas)",
+    "fonte": "Netflix (métrica oficial de horas assistidas via Tudum), compilado por whats-on-netflix.com, setembro de 2026",
+    "itens": [
+      {
+        "nome": "Stranger Things",
+        "apelidos": []
+      },
+      {
+        "nome": "Wandinha",
+        "apelidos": [
+          "wednesday"
+        ]
+      },
+      {
+        "nome": "Dahmer: Monstro - A História de Jeffrey Dahmer",
+        "apelidos": [
+          "dahmer",
+          "dahmer um canibal americano"
+        ]
+      },
+      {
+        "nome": "Bridgerton",
+        "apelidos": []
+      },
+      {
+        "nome": "O Agente Noturno",
+        "apelidos": [
+          "the night agent"
+        ]
+      },
+      {
+        "nome": "O Gambito da Rainha",
+        "apelidos": [
+          "the queens gambit"
+        ]
+      },
+      {
+        "nome": "The Witcher",
+        "apelidos": [
+          "witcher"
+        ]
+      },
+      {
+        "nome": "Eu Vou Te Encontrar",
+        "apelidos": [
+          "i will find you"
+        ]
+      },
+      {
+        "nome": "A Grande Ilusão",
+        "apelidos": [
+          "fool me once"
+        ]
+      },
+      {
+        "nome": "Adolescência",
+        "apelidos": [
+          "adolescence"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "jogos-mais-pico-espectadores-twitch",
+    "titulo": "Jogos com mais espectadores simultâneos (pico histórico) na Twitch",
+    "fonte": "TwitchTracker, pico histórico de espectadores simultâneos por categoria de jogo (categorias não-jogo como Just Chatting e Special Events excluídas), setembro de 2026",
+    "itens": [
+      {
+        "nome": "League of Legends",
+        "apelidos": [
+          "lol"
+        ]
+      },
+      {
+        "nome": "Fortnite",
+        "apelidos": []
+      },
+      {
+        "nome": "Minecraft",
+        "apelidos": []
+      },
+      {
+        "nome": "Counter-Strike",
+        "apelidos": [
+          "cs",
+          "csgo",
+          "cs2"
+        ]
+      },
+      {
+        "nome": "Grand Theft Auto VI",
+        "apelidos": [
+          "gta vi",
+          "gta 6"
+        ]
+      },
+      {
+        "nome": "VALORANT",
+        "apelidos": [
+          "valorant"
+        ]
+      },
+      {
+        "nome": "Dota 2",
+        "apelidos": [
+          "dota"
+        ]
+      },
+      {
+        "nome": "Call of Duty: Warzone",
+        "apelidos": [
+          "warzone",
+          "cod warzone"
+        ]
+      },
+      {
+        "nome": "Overwatch",
+        "apelidos": []
+      },
+      {
+        "nome": "Rust",
+        "apelidos": []
+      }
+    ]
   }
 ]
